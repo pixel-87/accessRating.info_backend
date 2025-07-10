@@ -23,7 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('dj_rest_auth.urls')),  # Login, logout, user details
     # path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration - requires allauth
-    # We'll add more API endpoints here later
+    
+    # API endpoints
+    path('api/v1/businesses/', include('apps.businesses.urls')),
 ]
 
 # Serve media files in development
