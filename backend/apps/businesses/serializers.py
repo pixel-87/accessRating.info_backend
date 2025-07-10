@@ -1,105 +1,125 @@
+"""
+Serializers for the businesses app.
+"""
 from rest_framework import serializers
 from .models import Business
 
 
+class BusinessSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Business model.
+    """
+    
+    # Read-only fields that are computed or set automatically
+    owner = serializers.StringRelatedField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    accessibility_level_display = serializers.CharField(read_only=True)
+    
+    class Meta:
+        model = Business
+        fields = [
+            'id',
+            'name', 
+            'description',
+            'address',
+            'postcode',
+            'city',
+            'latitude',        # Essential for Google Maps
+            'longitude',       # Essential for Google Maps
+            'business_type',
+            'specialisation',
+            'phone',
+            'email',
+            'website',
+            'opening_times',
+            'accessibility_level',
+            'accessibility_level_display',
+            'accessibility_features',
+            'accessibility_barriers',
+            'first_assessed_date',
+            'next_assessment_date',
+            'owner',
+            'created_at',
+            'updated_at',
+            'is_verified',
+            'sticker_requested',
+            'sticker_type',
+            'business_notes',
+            'special_mentions',
+        ]
+        read_only_fields = [
+            'id', 'owner', 'created_at', 'updated_at', 'is_verified', 
+            'first_assessed_date', 'next_assessment_date'
+        ]
+    
+    def create(self, validated_data):
+        """
+        Create a new Business instance.
+        """
+        business = Business(**validated_data)
+        business.save()
+        return business
+    
+    def update(self, instance, validated_data):
+        """
+        Update a Business instance.
+        """
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        instance.save()
+        return instance
+
+
+class BusinessCreateSerializer(BusinessSerializer):
+    """
+    Serializer for creating businesses with required fields only.
+    """
+    
+    class Meta(BusinessSerializer.Meta):
+        fields = [
+            'name', 
+            'description',
+            'address',
+            'postcode',
+            'city',
+            'latitude',
+            'longitude',
+            'what3words',
+            'business_type',
+            'specialisation',
+            'phone',
+            'email',
+            'website',
+            'opening_times',
+            'accessibility_level',
+            'accessibility_features',
+            'accessibility_barriers',
+            'business_notes',
+            'special_mentions',
+        ]
+
+
 class BusinessListSerializer(serializers.ModelSerializer):
     """
-    Lightweight serializer for business list view
+    Simplified serializer for listing businesses (less data).
     """
-    accessibility_rating_display = serializers.CharField(source='get_accessibility_rating_display', read_only=True)
-    business_type_display = serializers.CharField(source='get_business_type_display', read_only=True)
-    has_accessibility_rating = serializers.BooleanField(read_only=True)
+    
+    owner = serializers.StringRelatedField(read_only=True)
+    accessibility_level_display = serializers.CharField(read_only=True)
     
     class Meta:
         model = Business
         fields = [
             'id',
             'name',
-            'business_type',
-            'business_type_display',
-            'accessibility_rating',
-            'accessibility_rating_display',
-            'has_accessibility_rating',
-            'address',
+            'city',
             'postcode',
-            'is_active',
-            'created_at'
-        ]
-
-
-class BusinessDetailSerializer(serializers.ModelSerializer):
-    """
-    Full serializer for business detail view
-    """
-    accessibility_rating_display = serializers.CharField(source='get_accessibility_rating_display', read_only=True)
-    business_type_display = serializers.CharField(source='get_business_type_display', read_only=True)
-    has_accessibility_rating = serializers.BooleanField(read_only=True)
-    qr_code_url = serializers.CharField(read_only=True)
-    public_url = serializers.CharField(read_only=True)
-    
-    # Read-only fields for security
-    claimed_by_username = serializers.CharField(source='claimed_by.username', read_only=True)
-    assessed_by_username = serializers.CharField(source='assessed_by.username', read_only=True)
-    
-    class Meta:
-        model = Business
-        fields = [
-            'id',
-            'name',
-            'description',
             'business_type',
-            'business_type_display',
-            'email',
-            'phone',
-            'website',
-            'address',
-            'postcode',
-            'latitude',
-            'longitude',
-            'what3words',
-            'accessibility_rating',
-            'accessibility_rating_display',
-            'has_accessibility_rating',
-            'last_assessed',
-            'assessment_notes',
-            'claimed_by_username',
-            'assessed_by_username',
-            'is_verified',
-            'is_active',
-            'qr_code_url',
-            'public_url',
+            'accessibility_level',
+            'accessibility_level_display',
+            'owner',
             'created_at',
-            'updated_at'
+            'is_verified',
         ]
-
-
-class BusinessCreateSerializer(serializers.ModelSerializer):
-    """
-    Serializer for creating new businesses
-    """
-    class Meta:
-        model = Business
-        fields = [
-            'name',
-            'description',
-            'business_type',
-            'email',
-            'phone',
-            'website',
-            'address',
-            'postcode',
-            'latitude',
-            'longitude',
-            'what3words',
-        ]
-    
-    def validate_name(self, value):
-        """
-        Check that business name is not already taken in the same postcode
-        """
-        postcode = self.initial_data.get('postcode')
-        if postcode and Business.objects.filter(name=value, postcode=postcode).exists():
-            raise serializers.ValidationError(
-                "A business with this name already exists in this postcode."
-            )
-        return value

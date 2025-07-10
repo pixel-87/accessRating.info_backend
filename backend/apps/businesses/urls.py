@@ -1,14 +1,13 @@
-from django.urls import path
+"""
+URL patterns for the businesses app.
+"""
+from rest_framework.routers import DefaultRouter
+
 from . import views
 
-urlpatterns = [
-    # Business CRUD endpoints
-    path('', views.BusinessListView.as_view(), name='business-list'),
-    path('<uuid:pk>/', views.BusinessDetailView.as_view(), name='business-detail'),
-    
-    # QR Code endpoint
-    path('<uuid:business_id>/qr/', views.business_qr_view, name='business-qr'),
-    
-    # Statistics endpoint
-    path('stats/', views.business_stats_view, name='business-stats'),
-]
+# Create a router for the ViewSet
+router = DefaultRouter()
+router.register(r'', views.BusinessViewSet)
+
+# URL patterns
+urlpatterns = router.urls

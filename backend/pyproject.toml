@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "accessibility_api.test_settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+python_classes = ["Test*", "*Tests"]
+python_functions = ["test_*"]
+testpaths = ["apps"]
+addopts = [
+    "--tb=short",
+    "--strict-markers",
+    "--strict-config",
+    "--disable-warnings",
+]
+filterwarnings = [
+    "ignore::django.utils.deprecation.RemovedInDjango50Warning",
+    "ignore::django.utils.deprecation.RemovedInDjango51Warning", 
+    "ignore::DeprecationWarning",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_django = "django"
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]

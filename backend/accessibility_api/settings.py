@@ -29,12 +29,17 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Required for allauth
 ]
 
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
+    'dj_rest_auth.registration',  # For registration
+    'allauth',  # Required for dj_rest_auth registration
+    'allauth.account',  # Required for allauth
+    'allauth.socialaccount',  # Optional: for social auth
     'corsheaders',
     'django_extensions',
     'django_filters',
@@ -54,6 +59,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Required for allauth
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -132,3 +138,25 @@ USE_I18N = True
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Django Sites Framework (required for allauth)
+SITE_ID = 1
+
+# Django Allauth Configuration (updated to remove deprecation warnings)
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # No email verification for testing
+ACCOUNT_LOGIN_METHODS = ['username', 'email']  # Updated format - allows both username and email
+ACCOUNT_SIGNUP_FIELDS = {
+    'username': {'required': True},
+    'email': {'required': False},  # Make email optional for testing
+    'password1': {'required': True},
+    'password2': {'required': True},
+}
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email'
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_MIN_LENGTH = 3
+ACCOUNT_ADAPTER = 'apps.accounts.adapters.CustomAccountAdapter'  # Use custom adapter
+
+# Django REST Auth Configuration
+OLD_PASSWORD_FIELD_ENABLED = True
+LOGOUT_ON_PASSWORD_CHANGE = False
