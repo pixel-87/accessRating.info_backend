@@ -21,7 +21,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
     
     # Add filtering, searching, and ordering
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['accessibility_level', 'categories']
+    filterset_fields = ['accessibility_level', 'business_type', 'city']
     search_fields = ['name', 'description', 'address']
     ordering_fields = ['name', 'created_at', 'updated_at', 'accessibility_level']
     ordering = ['-created_at']  # Default ordering
