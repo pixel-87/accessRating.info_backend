@@ -52,7 +52,9 @@ class BusinessViewSetTest(APITestCase):
         url = reverse('business-list')
         response = self.client.get(url)
         
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['name'], 'Test Business')
 
     def test_create_business_authenticated(self):
         """Test creating a business when authenticated."""

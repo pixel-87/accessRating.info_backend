@@ -24,6 +24,8 @@ class BusinessSerializerTest(TestCase):
             'address': '123 Test Street',
             'postcode': 'SW1A 1AA',
             'city': 'London',
+            'latitude': 51.507351,
+            'longitude': -0.127758,
             'business_type': 'cafe',
             'accessibility_level': 3,
         }

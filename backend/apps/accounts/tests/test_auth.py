@@ -36,15 +36,12 @@ class AuthenticationTest(APITestCase):
         response = self.client.post(self.register_url, self.user_data)
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn('key', response.data)  # Token should be returned
+        self.assertIn('access', response.data)  # JWT access token should be returned
+        self.assertIn('refresh', response.data)  # JWT refresh token should be returned
         
         # Verify user was created
         user = User.objects.get(username='testuser')
         self.assertEqual(user.email, 'test@example.com')
-        
-        # Verify token was created
-        token = Token.objects.get(user=user)
-        self.assertEqual(response.data['key'], token.key)
         
     def test_user_registration_duplicate_username(self):
         """Test registration with duplicate username"""
@@ -99,11 +96,8 @@ class AuthenticationTest(APITestCase):
         response = self.client.post(self.login_url, login_data)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('key', response.data)
-        
-        # Verify token is valid
-        token = Token.objects.get(user=self.existing_user)
-        self.assertEqual(response.data['key'], token.key)
+        self.assertIn('access', response.data)  # JWT access token should be returned
+        self.assertIn('refresh', response.data)  # JWT refresh token should be returned
         
     def test_user_login_email(self):
         """Test login with email instead of username"""

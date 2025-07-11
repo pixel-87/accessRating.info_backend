@@ -22,10 +22,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('dj_rest_auth.urls')),  # Login, logout, user details
-    path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration - requires allauth
-    
-    # API endpoints
-    path('api/v1/businesses/', include('apps.businesses.urls')),
+    path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration
+    path('api/v1/', include('apps.businesses.urls')),  # Business API endpoints
 ]
 
 # Serve media files in development
