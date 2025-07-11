@@ -155,7 +155,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_USER_MODEL_EMAIL_FIELD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
-ACCOUNT_ADAPTER = 'apps.accounts.adapters.CustomAccountAdapter'  # Use custom adapter
+
 
 # Django REST Auth Configuration
 OLD_PASSWORD_FIELD_ENABLED = True
