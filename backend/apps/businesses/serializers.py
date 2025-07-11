@@ -43,7 +43,7 @@ class BusinessSerializer(serializers.ModelSerializer):
         model = Business
         fields = [
             'id', 'name', 'description', 'address', 'postcode', 'city',
-            'latitude', 'longitude', 'what3words', 'business_type', 
+            'latitude', 'longitude', 'business_type', 
             'specialisation', 'phone', 'email', 'website', 'opening_times',
             'accessibility_level', 'accessibility_features', 'accessibility_barriers',
             'access_report', 'first_assessed_date', 'next_assessment_date',

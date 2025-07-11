@@ -64,10 +64,6 @@ class Business(models.Model):
         null=True, blank=True, 
         help_text="Longitude for map location"
     )
-    what3words = models.CharField(
-        max_length=50, blank=True, 
-        help_text="What3Words location (alternative to lat/lng)"
-    )
     
     # Business details
     business_type = models.CharField(
