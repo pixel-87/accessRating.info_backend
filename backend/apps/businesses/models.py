@@ -210,6 +210,38 @@ class Business(models.Model):
         clean_name = self.name.replace(' ', '_')
         return f"business_id_{self.id}_{clean_name}_{self.city}_{self.accessibility_level}"
     
+    def generate_qr_code_url(self):
+        """Generate the URL that the QR code should link to"""
+        # This will link to the frontend business detail page
+        return f"https://yourdomain.com/business/{self.id}"
+    
+    def generate_qr_code_image(self, base_url="https://yourdomain.com"):
+        """Generate actual QR code image"""
+        import qrcode
+        from io import BytesIO
+        
+        # Create QR code linking to business detail page
+        url = f"{base_url}/business/{self.id}"
+        
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+        
+        # Create image
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # Convert to bytes for storage/response
+        buffer = BytesIO()
+        img.save(buffer, format='PNG')
+        buffer.seek(0)
+        
+        return buffer
+    
     def get_google_maps_coordinates(self):
         """Get coordinates formatted for Google Maps"""
         if self.has_location_data:

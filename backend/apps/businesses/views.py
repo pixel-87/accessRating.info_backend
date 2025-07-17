@@ -1,5 +1,8 @@
 from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Business, BusinessPhoto, BusinessReview
 from .serializers import BusinessSerializer, BusinessPhotoSerializer, BusinessReviewSerializer
@@ -45,6 +48,35 @@ class BusinessViewSet(viewsets.ModelViewSet):
         if instance.owner != self.request.user and not self.request.user.is_staff:
             raise PermissionError("You can only delete your own businesses")
         super().perform_destroy(instance)
+
+    @action(detail=True, methods=['get'], permission_classes=[])
+    def qr_code(self, request, pk=None):
+        """Generate QR code for the business"""
+        business = self.get_object()
+        base_url = request.build_absolute_uri('/').rstrip('/')
+        
+        try:
+            # Generate QR code image
+            qr_image_buffer = business.generate_qr_code_image(base_url)
+            
+            # Return as image response
+            response = HttpResponse(qr_image_buffer.getvalue(), content_type='image/png')
+            response['Content-Disposition'] = f'inline; filename="qr_code_{business.id}.png"'
+            return response
+        except Exception as e:
+            return Response({'error': f'Failed to generate QR code: {str(e)}'}, status=500)
+    
+    @action(detail=True, methods=['get'], permission_classes=[])
+    def qr_url(self, request, pk=None):
+        """Get the URL that the QR code links to"""
+        business = self.get_object()
+        base_url = request.build_absolute_uri('/').rstrip('/')
+        
+        return Response({
+            'qr_url': business.generate_qr_code_url(),
+            'business_url': f"{base_url}/business/{business.id}",
+            'qr_data': business.generate_qr_code_data()
+        })
 
 
 class BusinessPhotoViewSet(viewsets.ModelViewSet):

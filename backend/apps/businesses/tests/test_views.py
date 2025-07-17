@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.businesses.models import Business
 
@@ -20,7 +20,10 @@ class BusinessViewSetTest(APITestCase):
             email='test@example.com',
             password='testpass123'
         )
-        self.token = Token.objects.create(user=self.user)
+        
+        # Create JWT token for authentication
+        refresh = RefreshToken.for_user(self.user)
+        self.access_token = str(refresh.access_token)
         
         self.business_data = {
             'name': 'Test Business',
@@ -36,10 +39,14 @@ class BusinessViewSetTest(APITestCase):
             owner=self.user,
             **self.business_data
         )
+    
+    def authenticate(self):
+        """Authenticate the test client using JWT"""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
     def test_list_businesses_authenticated(self):
         """Test retrieving list of businesses when authenticated."""
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-list')
         response = self.client.get(url)
         
@@ -58,7 +65,7 @@ class BusinessViewSetTest(APITestCase):
 
     def test_create_business_authenticated(self):
         """Test creating a business when authenticated."""
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-list')
         
         new_business_data = {
@@ -86,7 +93,7 @@ class BusinessViewSetTest(APITestCase):
 
     def test_retrieve_business(self):
         """Test retrieving a specific business."""
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-detail', kwargs={'pk': self.business.pk})
         response = self.client.get(url)
         
@@ -95,7 +102,7 @@ class BusinessViewSetTest(APITestCase):
 
     def test_update_business_as_owner(self):
         """Test updating a business as the owner."""
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-detail', kwargs={'pk': self.business.pk})
         
         update_data = {
@@ -116,7 +123,7 @@ class BusinessViewSetTest(APITestCase):
 
     def test_delete_business_as_owner(self):
         """Test deleting a business as the owner."""
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-detail', kwargs={'pk': self.business.pk})
         response = self.client.delete(url)
         
@@ -136,7 +143,7 @@ class BusinessViewSetTest(APITestCase):
             business_type='shop'
         )
         
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-list')
         response = self.client.get(url, {'accessibility_level': 3})
         
@@ -146,7 +153,7 @@ class BusinessViewSetTest(APITestCase):
 
     def test_search_businesses(self):
         """Test searching businesses by name."""
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-list')
         response = self.client.get(url, {'search': 'Test'})
         
@@ -170,7 +177,7 @@ class BusinessViewSetTest(APITestCase):
             business_type='pub'
         )
         
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.authenticate()
         url = reverse('business-list')
         response = self.client.get(url, {'owner': 'me'})
         

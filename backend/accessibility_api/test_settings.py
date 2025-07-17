@@ -3,6 +3,7 @@ Test settings for accessibility_api project.
 Uses SQLite for faster test execution and overrides specific settings for testing.
 """
 
+from datetime import timedelta
 from .settings import *  # noqa: F403, F401
 
 # Import specific settings that we'll modify
@@ -73,10 +74,22 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 
-# REST Framework test settings
+# REST Framework test settings - Use JWT for consistency with production
 REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
-    'rest_framework.authentication.TokenAuthentication',
+    'rest_framework_simplejwt.authentication.JWTAuthentication',
+    'rest_framework.authentication.TokenAuthentication',  # Fallback for legacy tests
+    'rest_framework.authentication.SessionAuthentication',
 ]
+
+# JWT Settings for tests - shorter expiry for faster tests
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Shorter for tests
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),
+    'ROTATE_REFRESH_TOKENS': False,  # Disable rotation for test simplicity
+    'BLACKLIST_AFTER_ROTATION': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+}
 
 # Celery - use synchronous execution for tests
 CELERY_TASK_ALWAYS_EAGER = True

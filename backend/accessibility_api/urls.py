@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth/', include('dj_rest_auth.urls')),  # Login, logout, user details
     path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration
+    path('api/v1/accounts/', include('apps.accounts.urls')),  # User profile, favorites
     path('api/v1/', include('apps.businesses.urls')),  # Business API endpoints
 ]
 

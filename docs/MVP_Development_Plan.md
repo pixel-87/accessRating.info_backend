@@ -27,12 +27,17 @@ React Frontend ↔ Django REST API ↔ PostgreSQL Database
 
 ```
 apps/
-├── accounts/     # User management, JWT auth, roles
-├── businesses/   # Business profiles, contact info, photos
-├── assessments/  # Official ratings, reports, volunteer workflow
-├── reviews/      # Public feedback system (eBay-style)
-└── stickers/     # QR generation, physical sticker requests
+├── accounts/     # User management, JWT auth, roles ✅ COMPLETE
+└── businesses/   # Business profiles, contact info, photos, QR codes ✅ COMPLETE
 ```
+
+**Simplified Architecture:**
+
+- **No separate `assessments/` app** - Google Forms → Admin process → Manual rating entry
+- **No separate `stickers/` app** - QR generation built into Business model + simple request tracking
+- **No separate `reviews/` app** - Reviews integrated into businesses app
+
+This streamlined approach reduces complexity while maintaining all core functionality.
 
 ## 👥 User Roles
 
@@ -235,18 +240,31 @@ User (Django Auth)
 - 🚧 User dashboard (frontend needed)
 - ✅ Basic search functionality (backend complete)
 
-### **Phase 3: Assessment Workflow (3-4 weeks)** ⏳ PLANNED
+### **Phase 3: Assessment Workflow (SIMPLIFIED)** ✅ SIMPLIFIED
 
-**Goal**: Implement official assessment and approval system
+**Goal**: Streamlined assessment process without complex app architecture
 
-**New Features:**
+**Simplified Process:**
 
-- ⏳ Volunteer/assessor user role
-- ⏳ Assessment creation and submission
-- ⏳ Admin approval workflow
-- ⏳ Assessment history tracking
-- ⏳ Email notifications for assessments
-- ⏳ Basic PDF report generation
+- ✅ Google Forms for volunteer assessments (external)
+- ✅ Admin manually enters ratings via Django admin
+- ✅ Business model stores all rating data
+- ✅ QR code generation built into Business model
+- ✅ Sticker requests tracked via business fields
+
+**Eliminated Complexity:**
+
+- ❌ No separate assessments app
+- ❌ No complex workflow system
+- ❌ No separate stickers app
+- ❌ No assessment approval pipeline
+
+**Benefits:**
+
+- Faster MVP development
+- Simpler maintenance
+- Google Forms provides better UX for volunteers
+- Manual process allows for quality control
 
 **Enhanced Features:**
 
