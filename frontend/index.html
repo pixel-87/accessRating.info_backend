@@ -38,13 +38,23 @@
         <div class="max-w-md mx-auto">
           <input
             type="search"
+            name="search"
             placeholder="Search for accessible businesses..."
             class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            hx-get="http://localhost:8000/api/v1/businesses/"
-            hx-trigger="keyup changed delay:300ms"
+            hx-get="http://localhost:8000/api/v1/search/"
+            hx-trigger="keyup changed delay:300ms, search"
             hx-target="#search-results"
             hx-include="this"
           />
+
+          <!-- Test Button -->
+          <button
+            class="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+            hx-get="http://localhost:8000/api/v1/search/"
+            hx-target="#search-results"
+          >
+            Test Load All Businesses
+          </button>
         </div>
       </div>
 

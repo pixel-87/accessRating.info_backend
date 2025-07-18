@@ -3,9 +3,41 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import HttpResponse
+from django.shortcuts import render
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Business, BusinessPhoto, BusinessReview
 from .serializers import BusinessSerializer, BusinessPhotoSerializer, BusinessReviewSerializer
+
+
+@csrf_exempt
+def business_search_html(request):
+    """Return HTML fragments for HTMX business search"""
+    search_query = request.GET.get('search', '').strip()
+    
+    # Start with all businesses
+    businesses = Business.objects.all()
+    
+    # Apply search if provided
+    if search_query:
+        businesses = businesses.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(address__icontains=search_query) |
+            Q(city__icontains=search_query) |
+            Q(accessibility_features__icontains=search_query) |
+            Q(specialisation__icontains=search_query)
+        )
+    
+    # Order by accessibility level (highest first) then name
+    businesses = businesses.order_by('-accessibility_level', 'name')
+    
+    # Render the template with businesses
+    return render(request, 'businesses/business_cards.html', {
+        'businesses': businesses,
+        'search_query': search_query
+    })
 
 
 class BusinessViewSet(viewsets.ModelViewSet):

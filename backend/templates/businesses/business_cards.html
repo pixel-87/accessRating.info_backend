@@ -1,0 +1,85 @@
+{% for business in businesses %}
+<div
+  class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+>
+  <!-- Business Header -->
+  <div class="mb-4">
+    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ business.name }}</h3>
+    <span
+      class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+    >
+      {{ business.get_business_type_display }} {% if business.specialisation %}
+      - {{ business.specialisation }} {% endif %}
+    </span>
+  </div>
+
+  <!-- Accessibility Rating -->
+  {% if business.accessibility_level %}
+  <div class="mb-4">
+    <div class="flex items-center mb-2">
+      <span class="text-sm font-medium text-gray-700 mr-2"
+        >Accessibility Level:</span
+      >
+      <span class="bg-green-100 text-green-800 text-sm px-2 py-1 rounded">
+        Level {{ business.accessibility_level }}
+      </span>
+    </div>
+    <p class="text-xs text-gray-600">
+      {{ business.accessibility_level_display }}
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- Description -->
+  {% if business.description %}
+  <p class="text-gray-700 text-sm mb-4">
+    {{ business.description|truncatewords:20 }}
+  </p>
+  {% endif %}
+
+  <!-- Location -->
+  <div class="mb-4">
+    <p class="text-sm text-gray-600">
+      <span class="font-medium">📍</span>
+      {{ business.address }}, {{ business.city }} {{ business.postcode }}
+    </p>
+  </div>
+
+  <!-- Accessibility Features -->
+  {% if business.accessibility_features %}
+  <div class="mb-4">
+    <p class="text-xs text-gray-500 mb-1">Accessibility Features:</p>
+    <p class="text-sm text-gray-700">
+      {{ business.accessibility_features|truncatewords:10 }}
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- Contact Info -->
+  <div class="flex flex-wrap gap-2 text-sm">
+    {% if business.phone %}
+    <a
+      href="tel:{{ business.phone }}"
+      class="text-blue-600 hover:text-blue-800"
+    >
+      📞 {{ business.phone }}
+    </a>
+    {% endif %} {% if business.website %}
+    <a
+      href="{{ business.website }}"
+      target="_blank"
+      class="text-blue-600 hover:text-blue-800"
+    >
+      🌐 Website
+    </a>
+    {% endif %}
+  </div>
+</div>
+{% empty %}
+<div class="col-span-full text-center py-8">
+  <p class="text-gray-500 text-lg">No businesses found matching your search.</p>
+  <p class="text-gray-400 text-sm mt-2">
+    Try a different search term or browse all businesses.
+  </p>
+</div>
+{% endfor %}
