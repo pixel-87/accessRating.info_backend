@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Map | AccessRating</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+      #map {height: 500px;}
+    </style>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+  </head>
+  <body class="bg-gray-100">
+    <!-- Navigation -->
+    <div hx-get="nav.html" hx-trigger="load" hx-swap="outerHTML"></div>
+
+    <main class="container mx-auto py-8">
+      <h1 class="text-3xl font-bold mb-6">Business Map</h1>
+      <div id="map" class="mb-8"></div>
+    </main>
+
+    <!-- Footer -->
+    <div hx-get="footer.html" hx-trigger="load" hx-swap="outerHTML"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      // Initialize map
+      var map = L.map("map").setView([51.505, -0.09], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap",
+      }).addTo(map);
+
+      // Fetch business cards and add markers
+      fetch("/api/v1/search/")
+        .then((response) => response.text())
+        .then((html) => {
+          var tempDiv = document.createElement("div");
+          tempDiv.innerHTML = html;
+          var cards = tempDiv.querySelectorAll("[data-lat][data-lng]");
+          cards.forEach((card) => {
+            var lat = parseFloat(card.getAttribute("data-lat"));
+            var lng = parseFloat(card.getAttribute("data-lng"));
+            var name = card.querySelector("h3")
+              ? card.querySelector("h3").textContent
+              : "Business";
+            if (!isNaN(lat) && !isNaN(lng)) {
+              L.marker([lat, lng]).addTo(map).bindPopup(name);
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
