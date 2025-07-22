@@ -16,10 +16,21 @@
     />
 
     <style>
-      #map {height: 500px;}
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+      #business-panel,
+      #business-panel-overlay {
+        z-index: 9999 !important;
+      }
+
+      /* Only set background color for map container */
+      .leaflet-container {
+        background: #aadaff;
+      }
     </style>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    
   </head>
   <body class="bg-gray-100">
     <!-- Navigation -->
@@ -30,36 +41,89 @@
       <div id="map" class="mb-8"></div>
     </main>
 
+    <!-- Slide-up panel for business details -->
+    <div
+      id="business-panel-overlay"
+      class="fixed inset-0 bg-black bg-opacity-40 z-[2000] hidden"
+      onclick="hideBusinessPanel()"
+    ></div>
+    <div
+      id="business-panel"
+      class="fixed left-0 right-0 bottom-0 z-[2001] max-h-[80vh] bg-white rounded-t-2xl shadow-lg p-4 transition-transform duration-300 translate-y-full"
+      style="will-change: transform"
+    >
+      <!-- Business card content will be loaded here -->
+    </div>
+
     <!-- Footer -->
     <div hx-get="footer.html" hx-trigger="load" hx-swap="outerHTML"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-      // Initialize map
-      var map = L.map("map").setView([51.505, -0.09], 13);
+      // Initialize map with simple settings
+      var map = L.map("map").setView([52.5, -1.5], 6);
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: "© OpenStreetMap",
       }).addTo(map);
 
-      // Fetch business cards and add markers
-      fetch("/api/v1/search/")
-        .then((response) => response.text())
-        .then((html) => {
-          var tempDiv = document.createElement("div");
-          tempDiv.innerHTML = html;
-          var cards = tempDiv.querySelectorAll("[data-lat][data-lng]");
-          cards.forEach((card) => {
-            var lat = parseFloat(card.getAttribute("data-lat"));
-            var lng = parseFloat(card.getAttribute("data-lng"));
-            var name = card.querySelector("h3")
-              ? card.querySelector("h3").textContent
-              : "Business";
-            if (!isNaN(lat) && !isNaN(lng)) {
-              L.marker([lat, lng]).addTo(map).bindPopup(name);
+      // Fetch business locations and add markers
+      fetch("http://localhost:8000/api/v1/business-locations/")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((businesses) => {
+          businesses.forEach((business) => {
+            if (!isNaN(business.latitude) && !isNaN(business.longitude)) {
+              var marker = L.marker([
+                business.latitude,
+                business.longitude,
+              ]).addTo(map);
+              marker.on("click", function () {
+                showBusinessPanel(business.id);
+              });
             }
           });
+        })
+        .catch((error) => {
+          console.error("Error fetching business locations:", error);
         });
+
+      // Show the slide-up panel and load business card via HTMX
+      function showBusinessPanel(businessId) {
+        var overlay = document.getElementById("business-panel-overlay");
+        var panel = document.getElementById("business-panel");
+        overlay.classList.remove("hidden");
+        panel.classList.remove("translate-y-full");
+        panel.classList.add("translate-y-0");
+        // Use HTMX to load the business card
+        panel.setAttribute(
+          "hx-get",
+          `http://localhost:8000/api/v1/businesses/${businessId}/card/`
+        );
+        panel.setAttribute("hx-trigger", "load");
+        panel.setAttribute("hx-swap", "innerHTML");
+        htmx.process(panel);
+      }
+
+      // Hide the slide-up panel
+      function hideBusinessPanel() {
+        var overlay = document.getElementById("business-panel-overlay");
+        var panel = document.getElementById("business-panel");
+        overlay.classList.add("hidden");
+        panel.classList.remove("translate-y-0");
+        panel.classList.add("translate-y-full");
+        // Optionally clear content
+        panel.innerHTML = "";
+        // Remove htmx attributes
+        panel.removeAttribute("hx-get");
+        panel.removeAttribute("hx-trigger");
+        panel.removeAttribute("hx-swap");
+      }
     </script>
   </body>
 </html>

@@ -1,14 +1,37 @@
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
-from django_filters.rest_framework import DjangoFilterBackend
 from .models import Business, BusinessPhoto, BusinessReview
 from .serializers import BusinessSerializer, BusinessPhotoSerializer, BusinessReviewSerializer
+
+
+# API endpoint for business locations (for map)
+def business_locations(request):
+    businesses = Business.objects.filter(latitude__isnull=False, longitude__isnull=False)
+    data = [
+        {
+            "id": b.id,
+            "name": b.name,
+            "latitude": float(b.latitude),
+            "longitude": float(b.longitude),
+            "address": b.address,
+        }
+        for b in businesses
+    ]
+    return JsonResponse(data, safe=False)
+
+
+# API endpoint for a single business card (for map popup/panel)
+def business_card_html(request, business_id):
+    """Return HTML fragment for a single business card (for map popup/panel)"""
+    business = get_object_or_404(Business, id=business_id)
+    return render(request, 'businesses/business_card.html', {'business': business})
 
 
 @csrf_exempt

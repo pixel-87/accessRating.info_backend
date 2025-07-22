@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from corsheaders.defaults import default_headers
 from decouple import config
 from datetime import timedelta
 
@@ -19,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-temp-key-for-development')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
 # Application definition
 DJANGO_APPS = [
@@ -34,7 +35,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_simplejwt',
+    'rest_framework_simplejwt',  # Add this
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'allauth',
@@ -58,9 +59,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Required by allauth
 ]
 
 ROOT_URLCONF = 'accessibility_api.urls'
@@ -98,8 +99,8 @@ DATABASES = {
 # REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -128,43 +129,28 @@ REST_AUTH = {
     'JWT_AUTH_HTTPONLY': True,
 }
 
-# Django Allauth settings
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Allow both username and email
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-
 # CORS Settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-]
 
+# CORS settings - Allow frontend to make requests to backend
+if not DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",  # Common frontend dev server port
+        "http://127.0.0.1:3000",
+        "http://localhost:8080",  # Another common frontend port
+        "http://127.0.0.1:8080",
+        "file://",  # For directly opened HTML files
+    ]
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOW_CREDENTIALS = True
 
-# Allow file:// origins for local HTML files
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
-
-# Allow HTMX headers
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'hx-current-url',
-    'hx-request',
-    'hx-target',
-    'hx-trigger',
-    'hx-trigger-name',
+# Allow HTMX custom headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "hx-request",
+    "hx-target",
+    "hx-current-url",
+    "hx-trigger",
+    "hx-trigger-name",
+    "hx-history-restore-request",
 ]
 
 # Static files
@@ -182,3 +168,5 @@ USE_I18N = True
 USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
