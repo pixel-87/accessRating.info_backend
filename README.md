@@ -1,91 +1,207 @@
-# Access Rating Scheme
+# AccessRating.info Backend
 
-A Django-based accessibility rating platform for UK businesses.
-
-## 🎯 Project Overview
-
-The Access Rating Scheme is a voluntary initiative to rate businesses (1-5) based on physical accessibility, helping disabled individuals make informed decisions about business visits.
+A production-ready Django REST API backend for the AccessRating.info platform, providing accessibility ratings and business information services.
 
 ## 🏗️ Architecture
 
+- **Backend**: Django 5.2.4 with Django REST Framework
+- **Database**: PostgreSQL with connection pooling
+- **Cache**: Redis for session and query caching
+- **Reverse Proxy**: Caddy with automatic HTTPS/SSL
+- **Containerization**: Docker with multi-stage builds
+- **Security**: Production hardened with security headers, CORS, and environment isolation
+
+## 📁 Project Structure
+
 ```
-accessRatingScheme/
-├── backend/              # Django REST API
-├── docs/                # Project documentation
-├── docker-compose.yml   # PostgreSQL database
-└── .github/            # CI/CD workflows
+accessRating.info_backend/
+├── backend/                    # Django application code
+│   ├── accessibility_api/      # Django project settings
+│   ├── apps/                   # Django applications
+│   ├── requirements.txt        # Development dependencies
+│   ├── requirements-prod.txt   # Production dependencies
+│   └── manage.py              # Django management script
+├── docker/                     # Container configurations
+│   ├── Dockerfile             # Production container build
+│   ├── docker-compose.prod.yml # Production orchestration
+│   └── .dockerignore          # Docker ignore rules
+├── caddy/                      # Reverse proxy configuration
+│   └── Caddyfile              # Caddy server config
+├── scripts/                    # Deployment and utility scripts
+│   ├── deploy.sh              # Production deployment
+│   └── setup-ssl.sh           # SSL certificate setup
+├── docs/                       # Documentation
+│   ├── DEPLOYMENT.md          # Deployment guide
+│   ├── SECURITY.md            # Security documentation
+│   ├── QUICKSTART.md          # Quick start guide
+│   └── PRODUCTION_CHECKLIST.md # Production readiness checklist
+├── .env.prod.example          # Production environment template
+├── .gitignore                 # Git ignore rules
+├── Makefile                   # Development and production commands
+└── README.md                  # This file
 ```
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Development Setup
 
-- Python 3.12+
-- PostgreSQL 14+
-- Docker & Docker Compose
+1. **Clone the repository:**
 
-### Setup
+   ```bash
+   git clone https://github.com/pixel-87/accessRating.info_backend.git
+   cd accessRating.info_backend
+   ```
 
-```bash
-# Clone and setup
-git clone <repo-url>
-cd accessRatingScheme
+2. **Set up virtual environment:**
 
-# Backend setup
-cd backend
-python -m venv venv
-source venv/bin/activate  # or `venv\Scripts\activate` on Windows
-pip install -r requirements.txt
+   ```bash
+   cd backend
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-# Database setup
-docker-compose up -d  # Start PostgreSQL
-python manage.py migrate
-python manage.py createsuperuser
+3. **Install dependencies:**
 
-# Run development server
-python manage.py runserver
-```
+   ```bash
+   make install
+   ```
 
-### Testing
+4. **Start development database:**
 
-```bash
-cd backend
-python -m pytest  # Run all tests (57 tests)
-python -m pytest --cov  # With coverage report
-```
+   ```bash
+   make db-up
+   ```
 
-## 📋 API Endpoints
+5. **Run migrations:**
 
-- `POST /api/v1/auth/registration/` - User registration
-- `POST /api/v1/auth/login/` - User login
-- `GET /api/v1/businesses/` - List businesses
-- `POST /api/v1/businesses/` - Create business
-- `GET /api/v1/businesses/{id}/` - Get business details
+   ```bash
+   make migrate
+   ```
 
-## 🧪 Current Status
+6. **Start development server:**
+   ```bash
+   make run
+   ```
 
-- ✅ **Backend**: Django REST API with comprehensive tests (57/57 passing)
-- ✅ **Authentication**: JWT-based auth with user roles
-- ✅ **Business Management**: Full CRUD operations
-- ✅ **Google Maps Integration**: Location coordinates ready
-- 🚧 **Frontend**: React app (planned)
-- 🚧 **Deployment**: Production setup (planned)
+### Production Deployment
+
+1. **Prepare environment:**
+
+   ```bash
+   cp .env.prod.example .env.prod
+   # Edit .env.prod with your production values
+   ```
+
+2. **Configure domain (if you have one):**
+
+   ```bash
+   ./scripts/setup-ssl.sh your-domain.com
+   ```
+
+3. **Deploy:**
+   ```bash
+   make deploy
+   ```
+
+## 🛠️ Available Commands
+
+### Development
+
+- `make install` - Install development dependencies
+- `make test` - Run test suite
+- `make run` - Start development server
+- `make migrate` - Run database migrations
+- `make shell` - Open Django shell
+
+### Production
+
+- `make deploy` - Deploy to production
+- `make prod-up` - Start production services
+- `make prod-down` - Stop production services
+- `make prod-logs` - View production logs
+- `make prod-migrate` - Run production migrations
+
+## 🔒 Security Features
+
+- HTTPS enforcement with automatic SSL certificates
+- Security headers (HSTS, CSP, X-Frame-Options, etc.)
+- Secure session and cookie settings
+- Environment variable protection
+- Non-root Docker containers
+- CORS configuration for frontend integration
+- Database connection encryption
 
 ## 📚 Documentation
 
-See `/docs/` folder for:
+- [**Deployment Guide**](docs/DEPLOYMENT.md) - Complete deployment instructions
+- [**Security Guide**](docs/SECURITY.md) - Security configuration and best practices
+- [**Quick Start Guide**](docs/QUICKSTART.md) - Getting started quickly
+- [**Production Checklist**](docs/PRODUCTION_CHECKLIST.md) - Pre-deployment verification
 
-- `MVP_Development_Plan.md` - Complete development roadmap and phases
-- `AccessratingOverview.md` - Business requirements and objectives
-- `requirements.md` - Technical specifications
+## 🏥 Health Monitoring
+
+The application includes a health check endpoint at `/health/` that monitors:
+
+- Database connectivity
+- Cache (Redis) connectivity
+- Application status
 
 ## 🤝 Contributing
 
-1. Follow Django best practices
-2. Write tests for new features
-3. Update documentation
-4. Use conventional commit messages
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-[Add your license here]
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🐛 Support
+
+For support and questions:
+
+- Create an issue in this repository
+- Check the documentation in the `docs/` folder
+- Review the production checklist for deployment issues
+
+- `backend/` – Django API
+- `docs/` – Documentation
+- `docker-compose.yml` – PostgreSQL setup
+
+## Quick Start
+
+Clone repo, set up Python & Docker, run migrations, start server:
+
+```
+git clone <repo-url>
+cd accessRatingScheme/backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+docker-compose up -d
+python manage.py migrate
+python manage.py runserver
+```
+
+## API Endpoints
+
+- `GET /api/v1/businesses/` – List businesses
+- `POST /api/v1/businesses/` – Create business
+- `GET /api/v1/businesses/{id}/` – Business details
+
+## Status
+
+- Backend: Stable, tested
+- Frontend: Static site (separate repo)
+- Deployment: VPS/Docker
+
+## Contributing
+
+- Follow Django best practices
+- Write tests
+- Update docs
+
+## License
+
+[Add license]
