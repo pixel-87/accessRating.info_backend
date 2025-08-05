@@ -31,6 +31,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    ports:
+      - "8000:8000"
 
   db:
     image: postgres:15
@@ -40,7 +42,7 @@ services:
       - ../.env.prod
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 30s
       timeout: 10s
       retries: 3
