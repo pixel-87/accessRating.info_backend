@@ -7,24 +7,141 @@ from rest_framework import viewsets, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
+import math
 from .models import Business, BusinessPhoto, BusinessReview
 from .serializers import BusinessSerializer, BusinessPhotoSerializer, BusinessReviewSerializer
 
 
-# API endpoint for business locations (for map)
+def haversine_distance(lat1, lon1, lat2, lon2):
+    """
+    Calculate the great circle distance between two points 
+    on the earth (specified in decimal degrees)
+    Returns distance in miles
+    """
+    # Convert decimal degrees to radians
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    
+    # Haversine formula
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.asin(math.sqrt(a))
+    
+    # Radius of earth in miles
+    r = 3956
+    return c * r
+
+
+# API endpoint for business locations (for map) with filtering support
 def business_locations(request):
+    """
+    Return filtered business locations for map display
+    
+    Supported filters:
+    - min_rating: minimum accessibility rating (1-5)
+    - max_rating: maximum accessibility rating (1-5)
+    - business_type: type of business (cafe, restaurant, pub, etc.)
+    - lat, lng, radius: center point and radius in miles for distance filtering
+    - search: text search in name, description, address
+    """
     businesses = Business.objects.filter(latitude__isnull=False, longitude__isnull=False)
-    data = [
-        {
-            "id": b.id,
-            "name": b.name,
-            "latitude": float(b.latitude),
-            "longitude": float(b.longitude),
-            "address": b.address,
-        }
-        for b in businesses
-    ]
-    return JsonResponse(data, safe=False)
+    
+    # Filter by minimum accessibility rating
+    min_rating = request.GET.get('min_rating')
+    if min_rating:
+        try:
+            min_rating = int(min_rating)
+            if 1 <= min_rating <= 5:
+                businesses = businesses.filter(accessibility_level__gte=min_rating)
+        except (ValueError, TypeError):
+            pass
+    
+    # Filter by maximum accessibility rating
+    max_rating = request.GET.get('max_rating')
+    if max_rating:
+        try:
+            max_rating = int(max_rating)
+            if 1 <= max_rating <= 5:
+                businesses = businesses.filter(accessibility_level__lte=max_rating)
+        except (ValueError, TypeError):
+            pass
+    
+    # Filter by business type
+    business_type = request.GET.get('business_type')
+    if business_type and business_type != 'all':
+        businesses = businesses.filter(business_type=business_type)
+    
+    # Text search filter
+    search = request.GET.get('search', '').strip()
+    if search:
+        businesses = businesses.filter(
+            Q(name__icontains=search) |
+            Q(description__icontains=search) |
+            Q(address__icontains=search) |
+            Q(city__icontains=search)
+        )
+    
+    # Distance filtering
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    radius = request.GET.get('radius')
+    
+    filtered_businesses = []
+    
+    if lat and lng and radius:
+        try:
+            center_lat = float(lat)
+            center_lng = float(lng)
+            max_distance = float(radius)
+            
+            # Filter by distance
+            for business in businesses:
+                if business.latitude and business.longitude:
+                    distance = haversine_distance(
+                        center_lat, center_lng,
+                        float(business.latitude), float(business.longitude)
+                    )
+                    if distance <= max_distance:
+                        filtered_businesses.append({
+                            "id": business.id,
+                            "name": business.name,
+                            "latitude": float(business.latitude),
+                            "longitude": float(business.longitude),
+                            "address": business.address,
+                            "business_type": business.business_type,
+                            "accessibility_level": business.accessibility_level,
+                            "distance": round(distance, 2)
+                        })
+        except (ValueError, TypeError):
+            # If distance filtering fails, fall back to normal filtering
+            filtered_businesses = [
+                {
+                    "id": b.id,
+                    "name": b.name,
+                    "latitude": float(b.latitude),
+                    "longitude": float(b.longitude),
+                    "address": b.address,
+                    "business_type": b.business_type,
+                    "accessibility_level": b.accessibility_level,
+                }
+                for b in businesses
+            ]
+    else:
+        # No distance filtering - return all matching businesses
+        filtered_businesses = [
+            {
+                "id": b.id,
+                "name": b.name,
+                "latitude": float(b.latitude),
+                "longitude": float(b.longitude),
+                "address": b.address,
+                "business_type": b.business_type,
+                "accessibility_level": b.accessibility_level,
+            }
+            for b in businesses
+        ]
+    
+    return JsonResponse(filtered_businesses, safe=False)
 
 
 # API endpoint for a single business card (for map popup/panel)
