@@ -65,8 +65,30 @@ clean: ## Clean up cache files
 
 check: test lint ## Run tests and linting
 
-build: ## Build for production (placeholder)
-	@echo "Production build not implemented yet"
+build: ## Build for production
+	docker-compose -f docker/docker-compose.prod.yml build
 
-deploy: ## Deploy to production (placeholder) 
-	@echo "Production deployment not implemented yet"
+deploy: ## Deploy to production
+	./scripts/deploy.sh
+
+# Production Commands
+prod-up: ## Start production services
+	docker-compose -f docker/docker-compose.prod.yml up -d
+
+prod-down: ## Stop production services
+	docker-compose -f docker/docker-compose.prod.yml down
+
+prod-logs: ## View production logs
+	docker-compose -f docker/docker-compose.prod.yml logs -f
+
+prod-restart: ## Restart production services
+	docker-compose -f docker/docker-compose.prod.yml restart
+
+prod-migrate: ## Run migrations in production
+	docker-compose -f docker/docker-compose.prod.yml run --rm web python manage.py migrate --settings=accessibility_api.prod_settings
+
+prod-shell: ## Access Django shell in production
+	docker-compose -f docker/docker-compose.prod.yml run --rm web python manage.py shell --settings=accessibility_api.prod_settings
+
+prod-collectstatic: ## Collect static files in production
+	docker-compose -f docker/docker-compose.prod.yml run --rm web python manage.py collectstatic --noinput --settings=accessibility_api.prod_settings

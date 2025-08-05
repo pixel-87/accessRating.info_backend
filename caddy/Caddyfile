@@ -1,0 +1,78 @@
+your-domain.com, www.your-domain.com {
+    # Automatic HTTPS with Let's Encrypt
+    
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        
+        # Content security
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        
+        # Remove server header
+        -Server
+    }
+    
+    # Static files with caching
+    handle_path /static/* {
+        root * /app/staticfiles
+        file_server {
+            precompressed gzip br
+        }
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+    
+    # Media files with caching
+    handle_path /media/* {
+        root * /app/media
+        file_server
+        header Cache-Control "public, max-age=31536000"
+    }
+    
+    # Health check endpoint (no caching)
+    handle /health/* {
+        reverse_proxy web:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+        header Cache-Control "no-cache, no-store, must-revalidate"
+    }
+    
+    # All other requests to Django
+    handle {
+        reverse_proxy web:8000 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+            
+            # Timeouts
+            transport http {
+                dial_timeout 60s
+                response_header_timeout 60s
+            }
+        }
+    }
+    
+    # Error pages
+    handle_errors {
+        @5xx expression {http.error.status_code} >= 500
+        handle @5xx {
+            respond "Service temporarily unavailable" 503
+        }
+    }
+    
+    # Logging
+    log {
+        output file /var/log/caddy/access.log {
+            roll_size 100MB
+            roll_keep 3
+        }
+        format json
+    }
+}
