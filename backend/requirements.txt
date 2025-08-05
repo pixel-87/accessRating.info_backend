@@ -1,6 +1,6 @@
 asgiref==3.9.0
 Django==5.2.4
-django-allauth==64.2.1
+django-allauth==65.10.0
 django-cors-headers==4.7.0
 django-debug-toolbar==6.0.0
 django-extensions==4.1
