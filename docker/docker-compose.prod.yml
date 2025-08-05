@@ -36,12 +36,8 @@ services:
     image: postgres:15
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
     env_file:
-      - .env.prod
+      - ../.env.prod
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
