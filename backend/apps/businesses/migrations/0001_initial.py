@@ -16,139 +16,473 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Business',
+            name="Business",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(help_text='Business name', max_length=200)),
-                ('description', models.TextField(blank=True, help_text='Business description (editable by business owner, ~100 words)', max_length=600)),
-                ('address', models.TextField(help_text='Full address of the business')),
-                ('postcode', models.CharField(help_text='UK postcode', max_length=10, validators=[django.core.validators.RegexValidator(flags=0, message='Enter a valid UK postcode (e.g., SW1A 1AA)', regex='^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$')])),
-                ('city', models.CharField(default='', help_text='City', max_length=100)),
-                ('latitude', models.DecimalField(blank=True, decimal_places=7, help_text='Latitude for map location', max_digits=10, null=True)),
-                ('longitude', models.DecimalField(blank=True, decimal_places=7, help_text='Longitude for map location', max_digits=10, null=True)),
-                ('what3words', models.CharField(blank=True, help_text='What3Words location (alternative to lat/lng)', max_length=50)),
-                ('business_type', models.CharField(choices=[('cafe', 'Cafe'), ('restaurant', 'Restaurant'), ('shop', 'Shop'), ('pub', 'Pub'), ('hotel', 'Hotel'), ('office', 'Office'), ('healthcare', 'Healthcare'), ('entertainment', 'Entertainment'), ('education', 'Education'), ('transport', 'Transport'), ('other', 'Other')], default='other', help_text='Type of business (e.g., cafe, restaurant, shop)', max_length=50)),
-                ('specialisation', models.CharField(blank=True, help_text="Business specialisation (e.g., 'Italian' for restaurant)", max_length=100)),
-                ('phone', models.CharField(blank=True, help_text='Contact phone number', max_length=20)),
-                ('email', models.EmailField(blank=True, help_text='Contact email', max_length=254)),
-                ('website', models.URLField(blank=True, help_text='Business website')),
-                ('opening_times', models.TextField(blank=True, help_text='Business opening times (editable by business owner)')),
-                ('accessibility_level', models.IntegerField(blank=True, choices=[(1, 'Rating 1: Accessible to individuals with limited mobility'), (2, 'Rating 2: Accessible to wheelchair users with step-free entry'), (3, 'Rating 3: Includes wheelchair-accessible bathroom with grab bars'), (4, 'Rating 4: Includes "Changing Places" bathroom with hoist system'), (5, 'Rating 5: Fully accessible for multiple users with diverse needs')], help_text='Accessibility rating (1-5) assigned by trained volunteer assessor', null=True, validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(5)])),
-                ('accessibility_features', models.TextField(blank=True, help_text='Specific accessibility notes and features (editable by business owner)')),
-                ('accessibility_barriers', models.TextField(blank=True, help_text='Description of accessibility barriers or limitations')),
-                ('access_report', models.TextField(blank=True, help_text='Full accessibility assessment report provided with rating')),
-                ('first_assessed_date', models.DateTimeField(blank=True, help_text='Date when business was first assessed', null=True)),
-                ('next_assessment_date', models.DateTimeField(blank=True, help_text='Scheduled date for next assessment (every 3 years or on request)', null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('is_verified', models.BooleanField(default=False, help_text='Whether this business listing has been verified by an admin')),
-                ('sticker_requested', models.BooleanField(default=False, help_text='Whether business has requested stickers')),
-                ('sticker_type', models.CharField(blank=True, choices=[('window_inside', 'Window (sticky on image side)'), ('window_outside', 'Window (sticky on back side)')], help_text='Type of sticker requested', max_length=20)),
-                ('business_notes', models.TextField(blank=True, help_text='Business notes and special requests (e.g., call in advance, bookings required)')),
-                ('special_mentions', models.TextField(blank=True, help_text='Special mentions about the business (e.g., employs people with disabilities)')),
-                ('owner', models.ForeignKey(blank=True, help_text='User who added/owns this business listing (business account)', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='businesses', to=settings.AUTH_USER_MODEL)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("name", models.CharField(help_text="Business name", max_length=200)),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True,
+                        help_text="Business description (editable by business owner, ~100 words)",
+                        max_length=600,
+                    ),
+                ),
+                ("address", models.TextField(help_text="Full address of the business")),
+                (
+                    "postcode",
+                    models.CharField(
+                        help_text="UK postcode",
+                        max_length=10,
+                        validators=[
+                            django.core.validators.RegexValidator(
+                                flags=0,
+                                message="Enter a valid UK postcode (e.g., SW1A 1AA)",
+                                regex="^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$",
+                            )
+                        ],
+                    ),
+                ),
+                (
+                    "city",
+                    models.CharField(default="", help_text="City", max_length=100),
+                ),
+                (
+                    "latitude",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=7,
+                        help_text="Latitude for map location",
+                        max_digits=10,
+                        null=True,
+                    ),
+                ),
+                (
+                    "longitude",
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=7,
+                        help_text="Longitude for map location",
+                        max_digits=10,
+                        null=True,
+                    ),
+                ),
+                (
+                    "what3words",
+                    models.CharField(
+                        blank=True,
+                        help_text="What3Words location (alternative to lat/lng)",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "business_type",
+                    models.CharField(
+                        choices=[
+                            ("cafe", "Cafe"),
+                            ("restaurant", "Restaurant"),
+                            ("shop", "Shop"),
+                            ("pub", "Pub"),
+                            ("hotel", "Hotel"),
+                            ("office", "Office"),
+                            ("healthcare", "Healthcare"),
+                            ("entertainment", "Entertainment"),
+                            ("education", "Education"),
+                            ("transport", "Transport"),
+                            ("other", "Other"),
+                        ],
+                        default="other",
+                        help_text="Type of business (e.g., cafe, restaurant, shop)",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "specialisation",
+                    models.CharField(
+                        blank=True,
+                        help_text="Business specialisation (e.g., 'Italian' for restaurant)",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "phone",
+                    models.CharField(
+                        blank=True, help_text="Contact phone number", max_length=20
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        blank=True, help_text="Contact email", max_length=254
+                    ),
+                ),
+                ("website", models.URLField(blank=True, help_text="Business website")),
+                (
+                    "opening_times",
+                    models.TextField(
+                        blank=True,
+                        help_text="Business opening times (editable by business owner)",
+                    ),
+                ),
+                (
+                    "accessibility_level",
+                    models.IntegerField(
+                        blank=True,
+                        choices=[
+                            (
+                                1,
+                                "Rating 1: Accessible to individuals with limited mobility",
+                            ),
+                            (
+                                2,
+                                "Rating 2: Accessible to wheelchair users with step-free entry",
+                            ),
+                            (
+                                3,
+                                "Rating 3: Includes wheelchair-accessible bathroom with grab bars",
+                            ),
+                            (
+                                4,
+                                'Rating 4: Includes "Changing Places" bathroom with hoist system',
+                            ),
+                            (
+                                5,
+                                "Rating 5: Fully accessible for multiple users with diverse needs",
+                            ),
+                        ],
+                        help_text="Accessibility rating (1-5) assigned by trained volunteer assessor",
+                        null=True,
+                        validators=[
+                            django.core.validators.MinValueValidator(1),
+                            django.core.validators.MaxValueValidator(5),
+                        ],
+                    ),
+                ),
+                (
+                    "accessibility_features",
+                    models.TextField(
+                        blank=True,
+                        help_text="Specific accessibility notes and features (editable by business owner)",
+                    ),
+                ),
+                (
+                    "accessibility_barriers",
+                    models.TextField(
+                        blank=True,
+                        help_text="Description of accessibility barriers or limitations",
+                    ),
+                ),
+                (
+                    "access_report",
+                    models.TextField(
+                        blank=True,
+                        help_text="Full accessibility assessment report provided with rating",
+                    ),
+                ),
+                (
+                    "first_assessed_date",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Date when business was first assessed",
+                        null=True,
+                    ),
+                ),
+                (
+                    "next_assessment_date",
+                    models.DateTimeField(
+                        blank=True,
+                        help_text="Scheduled date for next assessment (every 3 years or on request)",
+                        null=True,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "is_verified",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether this business listing has been verified by an admin",
+                    ),
+                ),
+                (
+                    "sticker_requested",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether business has requested stickers",
+                    ),
+                ),
+                (
+                    "sticker_type",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("window_inside", "Window (sticky on image side)"),
+                            ("window_outside", "Window (sticky on back side)"),
+                        ],
+                        help_text="Type of sticker requested",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "business_notes",
+                    models.TextField(
+                        blank=True,
+                        help_text="Business notes and special requests (e.g., call in advance, bookings required)",
+                    ),
+                ),
+                (
+                    "special_mentions",
+                    models.TextField(
+                        blank=True,
+                        help_text="Special mentions about the business (e.g., employs people with disabilities)",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="User who added/owns this business listing (business account)",
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="businesses",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Business',
-                'verbose_name_plural': 'Businesses',
-                'ordering': ['-created_at'],
+                "verbose_name": "Business",
+                "verbose_name_plural": "Businesses",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='BusinessPhoto',
+            name="BusinessPhoto",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('photo', models.ImageField(help_text='Business photo', upload_to='business_photos/')),
-                ('photo_type', models.CharField(choices=[('exterior', 'Exterior Photo'), ('interior', 'Interior Photo'), ('accessibility', 'Accessibility Feature'), ('entrance', 'Entrance'), ('facilities', 'Facilities')], help_text='Type of photo', max_length=20)),
-                ('caption', models.CharField(blank=True, help_text='Photo caption or description', max_length=200)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('is_primary', models.BooleanField(default=False, help_text='Whether this is the primary photo for the business')),
-                ('business', models.ForeignKey(help_text='Business this photo belongs to', on_delete=django.db.models.deletion.CASCADE, related_name='photos', to='businesses.business')),
-                ('uploaded_by', models.ForeignKey(help_text='User who uploaded this photo', null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "photo",
+                    models.ImageField(
+                        help_text="Business photo", upload_to="business_photos/"
+                    ),
+                ),
+                (
+                    "photo_type",
+                    models.CharField(
+                        choices=[
+                            ("exterior", "Exterior Photo"),
+                            ("interior", "Interior Photo"),
+                            ("accessibility", "Accessibility Feature"),
+                            ("entrance", "Entrance"),
+                            ("facilities", "Facilities"),
+                        ],
+                        help_text="Type of photo",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "caption",
+                    models.CharField(
+                        blank=True,
+                        help_text="Photo caption or description",
+                        max_length=200,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "is_primary",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether this is the primary photo for the business",
+                    ),
+                ),
+                (
+                    "business",
+                    models.ForeignKey(
+                        help_text="Business this photo belongs to",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="photos",
+                        to="businesses.business",
+                    ),
+                ),
+                (
+                    "uploaded_by",
+                    models.ForeignKey(
+                        help_text="User who uploaded this photo",
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Business Photo',
-                'verbose_name_plural': 'Business Photos',
-                'ordering': ['-is_primary', '-created_at'],
+                "verbose_name": "Business Photo",
+                "verbose_name_plural": "Business Photos",
+                "ordering": ["-is_primary", "-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='BusinessReview',
+            name="BusinessReview",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rating', models.CharField(choices=[('positive', 'Positive'), ('neutral', 'Neutral'), ('negative', 'Negative')], help_text='Overall experience rating (required if other fields are added)', max_length=10)),
-                ('comment', models.TextField(blank=True, help_text="User's comment about their experience")),
-                ('photo', models.ImageField(blank=True, help_text='Photo of the business experience', null=True, upload_to='business_reviews/')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('is_approved', models.BooleanField(default=True, help_text='Whether this review has been approved by moderators')),
-                ('business', models.ForeignKey(help_text='Business being reviewed', on_delete=django.db.models.deletion.CASCADE, related_name='reviews', to='businesses.business')),
-                ('reviewer', models.ForeignKey(help_text='User who wrote the review', on_delete=django.db.models.deletion.CASCADE, related_name='business_reviews', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "rating",
+                    models.CharField(
+                        choices=[
+                            ("positive", "Positive"),
+                            ("neutral", "Neutral"),
+                            ("negative", "Negative"),
+                        ],
+                        help_text="Overall experience rating (required if other fields are added)",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "comment",
+                    models.TextField(
+                        blank=True, help_text="User's comment about their experience"
+                    ),
+                ),
+                (
+                    "photo",
+                    models.ImageField(
+                        blank=True,
+                        help_text="Photo of the business experience",
+                        null=True,
+                        upload_to="business_reviews/",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "is_approved",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Whether this review has been approved by moderators",
+                    ),
+                ),
+                (
+                    "business",
+                    models.ForeignKey(
+                        help_text="Business being reviewed",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reviews",
+                        to="businesses.business",
+                    ),
+                ),
+                (
+                    "reviewer",
+                    models.ForeignKey(
+                        help_text="User who wrote the review",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="business_reviews",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Business Review',
-                'verbose_name_plural': 'Business Reviews',
-                'ordering': ['-created_at'],
+                "verbose_name": "Business Review",
+                "verbose_name_plural": "Business Reviews",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['name'], name='businesses__name_a138ad_idx'),
+            model_name="business",
+            index=models.Index(fields=["name"], name="businesses__name_a138ad_idx"),
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['postcode'], name='businesses__postcod_023b96_idx'),
+            model_name="business",
+            index=models.Index(
+                fields=["postcode"], name="businesses__postcod_023b96_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['city'], name='businesses__city_0894c6_idx'),
+            model_name="business",
+            index=models.Index(fields=["city"], name="businesses__city_0894c6_idx"),
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['business_type'], name='businesses__busines_cfa4f0_idx'),
+            model_name="business",
+            index=models.Index(
+                fields=["business_type"], name="businesses__busines_cfa4f0_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['accessibility_level'], name='businesses__accessi_90765a_idx'),
+            model_name="business",
+            index=models.Index(
+                fields=["accessibility_level"], name="businesses__accessi_90765a_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['-created_at'], name='businesses__created_869a3e_idx'),
+            model_name="business",
+            index=models.Index(
+                fields=["-created_at"], name="businesses__created_869a3e_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['first_assessed_date'], name='businesses__first_a_f503ae_idx'),
+            model_name="business",
+            index=models.Index(
+                fields=["first_assessed_date"], name="businesses__first_a_f503ae_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='business',
-            index=models.Index(fields=['next_assessment_date'], name='businesses__next_as_1ed46c_idx'),
+            model_name="business",
+            index=models.Index(
+                fields=["next_assessment_date"], name="businesses__next_as_1ed46c_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='businessphoto',
-            index=models.Index(fields=['business', '-created_at'], name='businesses__busines_d7c443_idx'),
+            model_name="businessphoto",
+            index=models.Index(
+                fields=["business", "-created_at"],
+                name="businesses__busines_d7c443_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='businessphoto',
-            index=models.Index(fields=['photo_type'], name='businesses__photo_t_271f3c_idx'),
+            model_name="businessphoto",
+            index=models.Index(
+                fields=["photo_type"], name="businesses__photo_t_271f3c_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='businessphoto',
-            index=models.Index(fields=['is_primary'], name='businesses__is_prim_cb8180_idx'),
+            model_name="businessphoto",
+            index=models.Index(
+                fields=["is_primary"], name="businesses__is_prim_cb8180_idx"
+            ),
         ),
         migrations.AddIndex(
-            model_name='businessreview',
-            index=models.Index(fields=['business', '-created_at'], name='businesses__busines_f72fa1_idx'),
+            model_name="businessreview",
+            index=models.Index(
+                fields=["business", "-created_at"],
+                name="businesses__busines_f72fa1_idx",
+            ),
         ),
         migrations.AddIndex(
-            model_name='businessreview',
-            index=models.Index(fields=['rating'], name='businesses__rating_101706_idx'),
+            model_name="businessreview",
+            index=models.Index(fields=["rating"], name="businesses__rating_101706_idx"),
         ),
         migrations.AddIndex(
-            model_name='businessreview',
-            index=models.Index(fields=['is_approved'], name='businesses__is_appr_ec42c7_idx'),
+            model_name="businessreview",
+            index=models.Index(
+                fields=["is_approved"], name="businesses__is_appr_ec42c7_idx"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='businessreview',
-            unique_together={('business', 'reviewer')},
+            name="businessreview",
+            unique_together={("business", "reviewer")},
         ),
     ]

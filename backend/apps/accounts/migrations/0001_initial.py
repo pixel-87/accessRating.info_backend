@@ -11,63 +11,209 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('businesses', '0003_remove_what3words'),
+        ("businesses", "0003_remove_what3words"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UserProfile',
+            name="UserProfile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user_type', models.CharField(choices=[('regular', 'Regular User'), ('business', 'Business Owner'), ('assessor', 'Volunteer Assessor')], default='regular', help_text='Type of user account', max_length=20)),
-                ('phone', models.CharField(blank=True, help_text='Contact phone number', max_length=20, validators=[django.core.validators.RegexValidator(message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.", regex='^\\+?1?\\d{9,15}$')])),
-                ('bio', models.TextField(blank=True, help_text='User biography or description', max_length=500)),
-                ('accessibility_needs', models.TextField(blank=True, help_text="User's accessibility requirements and preferences")),
-                ('business_license_number', models.CharField(blank=True, help_text='Business license or registration number (for business accounts)', max_length=50)),
-                ('assessor_training_completed', models.BooleanField(default=False, help_text='Whether assessor has completed training')),
-                ('assessor_certification_date', models.DateField(blank=True, help_text='Date when assessor completed certification', null=True)),
-                ('email_notifications', models.BooleanField(default=True, help_text='Receive email notifications')),
-                ('profile_public', models.BooleanField(default=False, help_text='Make profile visible to other users')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('user', models.OneToOneField(help_text='Associated Django user account', on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "user_type",
+                    models.CharField(
+                        choices=[
+                            ("regular", "Regular User"),
+                            ("business", "Business Owner"),
+                            ("assessor", "Volunteer Assessor"),
+                        ],
+                        default="regular",
+                        help_text="Type of user account",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "phone",
+                    models.CharField(
+                        blank=True,
+                        help_text="Contact phone number",
+                        max_length=20,
+                        validators=[
+                            django.core.validators.RegexValidator(
+                                message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.",
+                                regex="^\\+?1?\\d{9,15}$",
+                            )
+                        ],
+                    ),
+                ),
+                (
+                    "bio",
+                    models.TextField(
+                        blank=True,
+                        help_text="User biography or description",
+                        max_length=500,
+                    ),
+                ),
+                (
+                    "accessibility_needs",
+                    models.TextField(
+                        blank=True,
+                        help_text="User's accessibility requirements and preferences",
+                    ),
+                ),
+                (
+                    "business_license_number",
+                    models.CharField(
+                        blank=True,
+                        help_text="Business license or registration number (for business accounts)",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "assessor_training_completed",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Whether assessor has completed training",
+                    ),
+                ),
+                (
+                    "assessor_certification_date",
+                    models.DateField(
+                        blank=True,
+                        help_text="Date when assessor completed certification",
+                        null=True,
+                    ),
+                ),
+                (
+                    "email_notifications",
+                    models.BooleanField(
+                        default=True, help_text="Receive email notifications"
+                    ),
+                ),
+                (
+                    "profile_public",
+                    models.BooleanField(
+                        default=False, help_text="Make profile visible to other users"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        help_text="Associated Django user account",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="profile",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'User Profile',
-                'verbose_name_plural': 'User Profiles',
+                "verbose_name": "User Profile",
+                "verbose_name_plural": "User Profiles",
             },
         ),
         migrations.CreateModel(
-            name='UserSearchHistory',
+            name="UserSearchHistory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('search_query', models.CharField(help_text='The search query', max_length=200)),
-                ('search_location', models.CharField(blank=True, help_text='Location used in search', max_length=200)),
-                ('business_type_filter', models.CharField(blank=True, help_text='Business type filter applied', max_length=50)),
-                ('accessibility_filter', models.IntegerField(blank=True, help_text='Minimum accessibility level filter', null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(help_text='User who performed the search', on_delete=django.db.models.deletion.CASCADE, related_name='search_history', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "search_query",
+                    models.CharField(help_text="The search query", max_length=200),
+                ),
+                (
+                    "search_location",
+                    models.CharField(
+                        blank=True, help_text="Location used in search", max_length=200
+                    ),
+                ),
+                (
+                    "business_type_filter",
+                    models.CharField(
+                        blank=True,
+                        help_text="Business type filter applied",
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "accessibility_filter",
+                    models.IntegerField(
+                        blank=True,
+                        help_text="Minimum accessibility level filter",
+                        null=True,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="User who performed the search",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="search_history",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'User Search History',
-                'verbose_name_plural': 'User Search Histories',
-                'ordering': ['-created_at'],
+                "verbose_name": "User Search History",
+                "verbose_name_plural": "User Search Histories",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='UserFavorite',
+            name="UserFavorite",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('business', models.ForeignKey(help_text='The favorited business', on_delete=django.db.models.deletion.CASCADE, related_name='favorited_by', to='businesses.business')),
-                ('user', models.ForeignKey(help_text='User who favorited the business', on_delete=django.db.models.deletion.CASCADE, related_name='favorites', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "business",
+                    models.ForeignKey(
+                        help_text="The favorited business",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="favorited_by",
+                        to="businesses.business",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="User who favorited the business",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="favorites",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'User Favorite',
-                'verbose_name_plural': 'User Favorites',
-                'ordering': ['-created_at'],
-                'unique_together': {('user', 'business')},
+                "verbose_name": "User Favorite",
+                "verbose_name_plural": "User Favorites",
+                "ordering": ["-created_at"],
+                "unique_together": {("user", "business")},
             },
         ),
     ]

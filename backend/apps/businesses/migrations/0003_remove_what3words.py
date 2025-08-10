@@ -7,23 +7,47 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('businesses', '0002_remove_business_what3words_alter_business_latitude_and_more'),
+        (
+            "businesses",
+            "0002_remove_business_what3words_alter_business_latitude_and_more",
+        ),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='business',
-            name='latitude',
-            field=models.DecimalField(blank=True, decimal_places=6, help_text='Latitude for map location', max_digits=10, null=True),
+            model_name="business",
+            name="latitude",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=6,
+                help_text="Latitude for map location",
+                max_digits=10,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='business',
-            name='longitude',
-            field=models.DecimalField(blank=True, decimal_places=6, help_text='Longitude for map location', max_digits=10, null=True),
+            model_name="business",
+            name="longitude",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=6,
+                help_text="Longitude for map location",
+                max_digits=10,
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='business',
-            name='postcode',
-            field=models.CharField(help_text='UK postcode', max_length=10, validators=[django.core.validators.RegexValidator(message='Enter a valid UK postcode (e.g., SW1A 1AA)', regex='^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$')]),
+            model_name="business",
+            name="postcode",
+            field=models.CharField(
+                help_text="UK postcode",
+                max_length=10,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        message="Enter a valid UK postcode (e.g., SW1A 1AA)",
+                        regex="^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][A-Z]{2}$",
+                    )
+                ],
+            ),
         ),
     ]
