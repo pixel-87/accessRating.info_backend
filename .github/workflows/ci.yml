@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: accessibility_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: [5432:5432]
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_NAME: accessibility_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      SECRET_KEY: test
+      DEBUG: "True"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r accessRating.info_backend/backend/requirements.txt
+          pip install pytest pytest-cov flake8 isort black
+
+      - name: Lint (flake8)
+        run: cd accessRating.info_backend/backend && flake8 apps/
+
+      - name: Lint (isort)
+        run: cd accessRating.info_backend/backend && isort --check-only apps/
+
+      - name: Lint (black)
+        run: cd accessRating.info_backend/backend && black --check apps/
+
+      - name: Run tests with coverage
+        run: cd accessRating.info_backend/backend && pytest --cov=apps --cov-report=term
