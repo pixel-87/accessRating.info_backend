@@ -1,10 +1,13 @@
 from datetime import date
 
 from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
-from apps.accounts.serializers import (UserFavoriteSerializer,
-                                       UserProfileSerializer,
-                                       UserSearchHistorySerializer,
-                                       UserSerializer, UserUpdateSerializer)
+from apps.accounts.serializers import (
+    UserFavoriteSerializer,
+    UserProfileSerializer,
+    UserSearchHistorySerializer,
+    UserSerializer,
+    UserUpdateSerializer,
+)
 from apps.businesses.models import Business
 from django.contrib.auth.models import User
 from django.test import TestCase
