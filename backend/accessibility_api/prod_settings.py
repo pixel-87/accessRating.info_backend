@@ -4,7 +4,9 @@ This file contains production-specific configurations that override the base set
 """
 
 import os
+
 from decouple import config
+
 from .settings import *  # noqa
 
 # SECURITY WARNING: don't run with debug turned on in production!

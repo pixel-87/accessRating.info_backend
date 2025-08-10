@@ -1,11 +1,10 @@
+from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
+from apps.businesses.models import Business
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
-from apps.businesses.models import Business
 
 
 class AccountsAPITestCase(APITestCase):

@@ -1,5 +1,7 @@
 import os
+
 import django
+
 
 def pytest_configure():
     """Configure Django settings for pytest"""

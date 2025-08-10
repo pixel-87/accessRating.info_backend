@@ -1,10 +1,9 @@
 from datetime import date
 
-from django.contrib.auth.models import User
-from django.test import TestCase
-
 from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
 from apps.businesses.models import Business
+from django.contrib.auth.models import User
+from django.test import TestCase
 
 
 class UserProfileModelTest(TestCase):

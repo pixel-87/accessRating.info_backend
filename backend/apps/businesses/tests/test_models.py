@@ -4,12 +4,11 @@ Tests for Business models.
 
 from datetime import timedelta
 
+from apps.businesses.models import Business, BusinessPhoto, BusinessReview
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
-
-from apps.businesses.models import Business, BusinessPhoto, BusinessReview
 
 
 class BusinessModelTest(TestCase):

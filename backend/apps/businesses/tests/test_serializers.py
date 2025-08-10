@@ -2,11 +2,10 @@
 Tests for the businesses app serializers.
 """
 
-from django.contrib.auth.models import User
-from django.test import TestCase
-
 from apps.businesses.models import Business
 from apps.businesses.serializers import BusinessSerializer
+from django.contrib.auth.models import User
+from django.test import TestCase
 
 
 class BusinessSerializerTest(TestCase):

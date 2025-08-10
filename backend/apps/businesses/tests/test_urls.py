@@ -2,12 +2,11 @@
 Tests for the businesses app URLs.
 """
 
+from apps.businesses.models import Business
+from apps.businesses.views import BusinessViewSet
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import resolve, reverse
-
-from apps.businesses.models import Business
-from apps.businesses.views import BusinessViewSet
 
 
 class BusinessURLsTest(TestCase):

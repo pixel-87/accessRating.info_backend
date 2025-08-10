@@ -2,13 +2,12 @@
 Tests for the businesses app views.
 """
 
+from apps.businesses.models import Business
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from apps.businesses.models import Business
 
 
 class BusinessViewSetTest(APITestCase):

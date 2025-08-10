@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 def pytest_configure():
     """Configure pytest for Django in the backend directory"""
     # Add the backend directory to the Python path

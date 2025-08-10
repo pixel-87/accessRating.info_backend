@@ -4,6 +4,7 @@ Uses SQLite for faster test execution and overrides specific settings for testin
 """
 
 from datetime import timedelta
+
 from .settings import *  # noqa: F403, F401
 
 # Import specific settings that we'll modify
