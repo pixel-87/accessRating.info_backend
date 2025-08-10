@@ -47,13 +47,13 @@ jobs:
           pip install pytest pytest-cov flake8 isort black
 
       - name: Lint (flake8)
-        run: cd accessRating.info_backend/backend && flake8 apps/
+        run: cd backend && flake8 apps/
 
       - name: Lint (isort)
-        run: cd accessRating.info_backend/backend && isort --check-only apps/
+        run: cd backend && isort --check-only apps/
 
       - name: Lint (black)
-        run: cd accessRating.info_backend/backend && black --check apps/
+        run: cd backend && black --check apps/
 
       - name: Run tests with coverage
-        run: cd accessRating.info_backend/backend && pytest --cov=apps --cov-report=term
+        run: cd backend && pytest --cov=apps --cov-report=term
