@@ -1,5 +1,5 @@
 # Production requirements
-asgiref==3.9.0
+asgiref==3.9.1
 Django==5.2.4
 django-allauth==64.2.1
 django-cors-headers==4.7.0
