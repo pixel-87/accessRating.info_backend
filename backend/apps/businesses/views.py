@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
 import math
+import logging
 from .models import Business, BusinessPhoto, BusinessReview
 from .serializers import BusinessSerializer, BusinessPhotoSerializer, BusinessReviewSerializer
 
@@ -236,7 +237,8 @@ class BusinessViewSet(viewsets.ModelViewSet):
             response['Content-Disposition'] = f'inline; filename="qr_code_{business.id}.png"'
             return response
         except Exception as e:
-            return Response({'error': f'Failed to generate QR code: {str(e)}'}, status=500)
+            logging.exception("Failed to generate QR code for business ID %s", business.id)
+            return Response({'error': 'Failed to generate QR code due to an internal error.'}, status=500)
     
     @action(detail=True, methods=['get'], permission_classes=[])
     def qr_url(self, request, pk=None):
