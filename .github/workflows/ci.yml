@@ -50,7 +50,7 @@ jobs:
         run: cd backend && flake8 --exclude venv,migrations apps/
 
       - name: Lint (isort)
-        run: cd backend && isort --check-only apps/
+        run: cd backend && isort --check --profile black --line-length 79 apps/
 
       - name: Lint (black)
         run: cd backend && black --check --line-length 79 apps/

@@ -4,7 +4,7 @@ This file contains production-specific configurations that override the base
 settings.
 """
 
-from .settings import config, BASE_DIR, MIDDLEWARE
+from .settings import BASE_DIR, MIDDLEWARE, config
 
 DEBUG = False
 

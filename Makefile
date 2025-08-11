@@ -54,8 +54,8 @@ lint: ## Run linting
 	cd backend && isort --check --profile black --line-length 79 apps/
 
 format: ## Format code
-	cd backend && black --line-length 79 apps/
 	cd backend && isort --profile black --line-length 79 apps/
+	cd backend && black --line-length 79 apps/
 
 clean: ## Clean up cache files
 	find . -type d -name "__pycache__" -delete
