@@ -72,3 +72,8 @@ yarn-error.log*
 
 # tests
 .pytest_cache/
+
+# secrets
+secrets/
+.secrets/
+.env.prod

@@ -1,4 +1,4 @@
-your-domain.com, www.your-domain.com {
+api.pixel-87.uk, www.api.pixel-87.uk {
     # Automatic HTTPS with Let's Encrypt
     
     # Security headers

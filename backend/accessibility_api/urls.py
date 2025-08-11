@@ -21,18 +21,10 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path(
-        "api/v1/auth/", include("dj_rest_auth.urls")
-    ),  # Login, logout, user details
-    path(
-        "api/v1/auth/registration/", include("dj_rest_auth.registration.urls")
-    ),  # Registration
-    path("api/v1/", include("apps.businesses.urls")),  # Business API endpoints
-    path(
-        "api/v1/accounts/",
-        include(("apps.accounts.urls", "accounts"), namespace="accounts"),
-    ),
+    path('admin/', admin.site.urls),
+    path('api/v1/auth/', include('dj_rest_auth.urls')),  # Login, logout, user details
+    path('api/v1/auth/registration/', include('dj_rest_auth.registration.urls')),  # Registration
+    path('api/v1/', include('apps.businesses.urls')),  # Business API endpoints
     # We'll add more API endpoints here later
 ]
 

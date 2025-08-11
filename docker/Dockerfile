@@ -33,7 +33,7 @@ RUN mkdir -p /app/staticfiles /app/media /var/log/django \
     && chown -R django:django /app /var/log/django
 
 # Collect static files
-RUN python manage.py collectstatic --noinput --settings=accessibility_api.prod_settings
+# RUN python manage.py collectstatic --noinput --settings=accessibility_api.prod_settings
 
 # Switch to non-root user
 USER django
