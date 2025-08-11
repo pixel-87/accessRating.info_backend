@@ -5,8 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import UserFavorite, UserProfile, UserSearchHistory
-from .serializers import (UserFavoriteSerializer, UserSearchHistorySerializer,
-                          UserUpdateSerializer)
+from .serializers import (
+    UserFavoriteSerializer,
+    UserSearchHistorySerializer,
+    UserUpdateSerializer,
+)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):

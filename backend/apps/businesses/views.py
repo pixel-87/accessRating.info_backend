@@ -11,8 +11,11 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .models import Business, BusinessPhoto, BusinessReview
-from .serializers import (BusinessPhotoSerializer, BusinessReviewSerializer,
-                          BusinessSerializer)
+from .serializers import (
+    BusinessPhotoSerializer,
+    BusinessReviewSerializer,
+    BusinessSerializer,
+)
 
 
 def haversine_distance(lat1, lon1, lat2, lon2):
@@ -125,9 +128,10 @@ def business_locations(request):
                                 "latitude": float(business.latitude),
                                 "longitude": float(business.longitude),
                                 "address": business.address,
-                                "business_type": business.business_type,
-                                "accessibility_level":
-                                    business.accessibility_level,
+                                "business_type": (business.business_type),
+                                "accessibility_level": (
+                                    business.accessibility_level
+                                ),  # noqa: E501
                                 "distance": round(distance, 2),
                             }
                         )
