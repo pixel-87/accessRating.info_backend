@@ -2,10 +2,11 @@
 Tests for the businesses app serializers.
 """
 
-from apps.businesses.models import Business
-from apps.businesses.serializers import BusinessSerializer
 from django.contrib.auth.models import User
 from django.test import TestCase
+
+from apps.businesses.models import Business
+from apps.businesses.serializers import BusinessSerializer
 
 
 class BusinessSerializerTest(TestCase):
@@ -14,7 +15,9 @@ class BusinessSerializerTest(TestCase):
     def setUp(self):
         """Set up test data."""
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
         )
 
         self.business_data = {
@@ -29,7 +32,9 @@ class BusinessSerializerTest(TestCase):
             "accessibility_level": 3,
         }
 
-        self.business = Business.objects.create(owner=self.user, **self.business_data)
+        self.business = Business.objects.create(
+            owner=self.user, **self.business_data
+        )
 
     def test_business_serialization(self):
         """Test serializing a Business instance."""

@@ -63,7 +63,11 @@ class UserProfileAdmin(admin.ModelAdmin):
         "profile_public",
         "created_at",
     ]
-    list_filter = ["user_type", "assessor_training_completed", "profile_public"]
+    list_filter = [
+        "user_type",
+        "assessor_training_completed",
+        "profile_public",
+    ]
     search_fields = ["user__username", "user__email", "phone"]
     readonly_fields = ["created_at", "updated_at"]
 
@@ -90,7 +94,11 @@ class UserSearchHistoryAdmin(admin.ModelAdmin):
         "accessibility_filter",
         "created_at",
     ]
-    list_filter = ["business_type_filter", "accessibility_filter", "created_at"]
+    list_filter = [
+        "business_type_filter",
+        "accessibility_filter",
+        "created_at",
+    ]
     search_fields = ["user__username", "search_query", "search_location"]
     readonly_fields = ["created_at"]
 

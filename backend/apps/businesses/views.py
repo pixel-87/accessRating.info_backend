@@ -11,11 +11,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .models import Business, BusinessPhoto, BusinessReview
-from .serializers import (
-    BusinessPhotoSerializer,
-    BusinessReviewSerializer,
-    BusinessSerializer,
-)
+from .serializers import (BusinessPhotoSerializer, BusinessReviewSerializer,
+                          BusinessSerializer)
 
 
 def haversine_distance(lat1, lon1, lat2, lon2):
@@ -47,14 +44,16 @@ def business_locations(request):
     Return filtered business locations for map display
 
     Supported filters:
-    - min_rating: minimum accessibility rating (1-5)
-    - max_rating: maximum accessibility rating (1-5)
-    - business_type: type of business (cafe, restaurant, pub, etc.)
-    - lat, lng, radius: center point and radius in miles for distance filtering
-    - search: text search in name, description, address
+      - min_rating: minimum accessibility rating (1-5)
+      - max_rating: maximum accessibility rating (1-5)
+      - business_type: type of business (cafe, restaurant, pub, etc.)
+            - lat, lng, radius: center point and radius in miles for distance
+                filtering
+      - search: text search in name, description, address
     """
     businesses = Business.objects.filter(
-        latitude__isnull=False, longitude__isnull=False
+        latitude__isnull=False,
+        longitude__isnull=False,
     )
 
     # Filter by minimum accessibility rating
@@ -63,7 +62,9 @@ def business_locations(request):
         try:
             min_rating = int(min_rating)
             if 1 <= min_rating <= 5:
-                businesses = businesses.filter(accessibility_level__gte=min_rating)
+                businesses = businesses.filter(
+                    accessibility_level__gte=min_rating
+                )
         except (ValueError, TypeError):
             pass
 
@@ -73,7 +74,9 @@ def business_locations(request):
         try:
             max_rating = int(max_rating)
             if 1 <= max_rating <= 5:
-                businesses = businesses.filter(accessibility_level__lte=max_rating)
+                businesses = businesses.filter(
+                    accessibility_level__lte=max_rating
+                )
         except (ValueError, TypeError):
             pass
 
@@ -123,7 +126,8 @@ def business_locations(request):
                                 "longitude": float(business.longitude),
                                 "address": business.address,
                                 "business_type": business.business_type,
-                                "accessibility_level": business.accessibility_level,
+                                "accessibility_level":
+                                    business.accessibility_level,
                                 "distance": round(distance, 2),
                             }
                         )
@@ -163,7 +167,11 @@ def business_locations(request):
 def business_card_html(request, business_id):
     """Return HTML fragment for a single business card (for map popup/panel)"""
     business = get_object_or_404(Business, id=business_id)
-    return render(request, "businesses/business_card.html", {"business": business})
+    return render(
+        request,
+        "businesses/business_card.html",
+        {"business": business},
+    )
 
 
 @csrf_exempt
@@ -192,7 +200,10 @@ def business_search_html(request):
     return render(
         request,
         "businesses/business_cards.html",
-        {"businesses": businesses, "search_query": search_query},
+        {
+            "businesses": businesses,
+            "search_query": search_query,
+        },
     )
 
 
@@ -207,7 +218,12 @@ class BusinessViewSet(viewsets.ModelViewSet):
         filters.SearchFilter,
         filters.OrderingFilter,
     ]
-    filterset_fields = ["business_type", "accessibility_level", "city", "is_verified"]
+    filterset_fields = [
+        "business_type",
+        "accessibility_level",
+        "city",
+        "is_verified",
+    ]
     search_fields = ["name", "description", "address", "city"]
     ordering_fields = ["name", "created_at", "accessibility_level"]
     ordering = ["-created_at"]
@@ -238,7 +254,10 @@ class BusinessViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         """Only allow owners to delete their businesses"""
-        if instance.owner != self.request.user and not self.request.user.is_staff:
+        if (
+            instance.owner != self.request.user
+            and not self.request.user.is_staff
+        ):
             raise PermissionError("You can only delete your own businesses")
         super().perform_destroy(instance)
 

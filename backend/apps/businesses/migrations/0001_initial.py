@@ -19,7 +19,12 @@ class Migration(migrations.Migration):
             name="Business",
             fields=[
                 ("id", models.AutoField(primary_key=True, serialize=False)),
-                ("name", models.CharField(help_text="Business name", max_length=200)),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Business name", max_length=200
+                    ),
+                ),
                 (
                     "description",
                     models.TextField(
@@ -28,7 +33,10 @@ class Migration(migrations.Migration):
                         max_length=600,
                     ),
                 ),
-                ("address", models.TextField(help_text="Full address of the business")),
+                (
+                    "address",
+                    models.TextField(help_text="Full address of the business"),
+                ),
                 (
                     "postcode",
                     models.CharField(
@@ -45,7 +53,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "city",
-                    models.CharField(default="", help_text="City", max_length=100),
+                    models.CharField(
+                        default="", help_text="City", max_length=100
+                    ),
                 ),
                 (
                     "latitude",
@@ -107,7 +117,9 @@ class Migration(migrations.Migration):
                 (
                     "phone",
                     models.CharField(
-                        blank=True, help_text="Contact phone number", max_length=20
+                        blank=True,
+                        help_text="Contact phone number",
+                        max_length=20,
                     ),
                 ),
                 (
@@ -116,7 +128,10 @@ class Migration(migrations.Migration):
                         blank=True, help_text="Contact email", max_length=254
                     ),
                 ),
-                ("website", models.URLField(blank=True, help_text="Business website")),
+                (
+                    "website",
+                    models.URLField(blank=True, help_text="Business website"),
+                ),
                 (
                     "opening_times",
                     models.TextField(
@@ -270,7 +285,8 @@ class Migration(migrations.Migration):
                 (
                     "photo",
                     models.ImageField(
-                        help_text="Business photo", upload_to="business_photos/"
+                        help_text="Business photo",
+                        upload_to="business_photos/",
                     ),
                 ),
                 (
@@ -355,7 +371,8 @@ class Migration(migrations.Migration):
                 (
                     "comment",
                     models.TextField(
-                        blank=True, help_text="User's comment about their experience"
+                        blank=True,
+                        help_text="User's comment about their experience",
                     ),
                 ),
                 (
@@ -403,7 +420,9 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="business",
-            index=models.Index(fields=["name"], name="businesses__name_a138ad_idx"),
+            index=models.Index(
+                fields=["name"], name="businesses__name_a138ad_idx"
+            ),
         ),
         migrations.AddIndex(
             model_name="business",
@@ -413,7 +432,9 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="business",
-            index=models.Index(fields=["city"], name="businesses__city_0894c6_idx"),
+            index=models.Index(
+                fields=["city"], name="businesses__city_0894c6_idx"
+            ),
         ),
         migrations.AddIndex(
             model_name="business",
@@ -424,7 +445,8 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="business",
             index=models.Index(
-                fields=["accessibility_level"], name="businesses__accessi_90765a_idx"
+                fields=["accessibility_level"],
+                name="businesses__accessi_90765a_idx",
             ),
         ),
         migrations.AddIndex(
@@ -436,13 +458,15 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name="business",
             index=models.Index(
-                fields=["first_assessed_date"], name="businesses__first_a_f503ae_idx"
+                fields=["first_assessed_date"],
+                name="businesses__first_a_f503ae_idx",
             ),
         ),
         migrations.AddIndex(
             model_name="business",
             index=models.Index(
-                fields=["next_assessment_date"], name="businesses__next_as_1ed46c_idx"
+                fields=["next_assessment_date"],
+                name="businesses__next_as_1ed46c_idx",
             ),
         ),
         migrations.AddIndex(
@@ -473,7 +497,9 @@ class Migration(migrations.Migration):
         ),
         migrations.AddIndex(
             model_name="businessreview",
-            index=models.Index(fields=["rating"], name="businesses__rating_101706_idx"),
+            index=models.Index(
+                fields=["rating"], name="businesses__rating_101706_idx"
+            ),
         ),
         migrations.AddIndex(
             model_name="businessreview",

@@ -33,7 +33,10 @@ class UserProfile(models.Model):
         validators=[
             RegexValidator(
                 regex=r"^\+?1?\d{9,15}$",
-                message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.",
+                message=(
+                    "Phone number must be entered in the format: "
+                    "+999999999'. Up to 15 digits allowed."
+                ),
             )
         ],
         help_text="Contact phone number",
@@ -46,14 +49,17 @@ class UserProfile(models.Model):
 
     # Accessibility preferences for regular users
     accessibility_needs = models.TextField(
-        blank=True, help_text="User's accessibility requirements and preferences"
+        blank=True,
+        help_text="User's accessibility requirements and preferences",
     )
 
     # Business-specific information
     business_license_number = models.CharField(
         max_length=50,
         blank=True,
-        help_text="Business license or registration number (for business accounts)",
+        help_text=(
+            "Business license or registration number (for business accounts)"
+        ),
     )
 
     # Assessor-specific information
@@ -61,7 +67,9 @@ class UserProfile(models.Model):
         default=False, help_text="Whether assessor has completed training"
     )
     assessor_certification_date = models.DateField(
-        null=True, blank=True, help_text="Date when assessor completed certification"
+        null=True,
+        blank=True,
+        help_text="Date when assessor completed certification",
     )
 
     # Privacy settings
@@ -139,7 +147,10 @@ class UserSearchHistory(models.Model):
         help_text="User who performed the search",
     )
 
-    search_query = models.CharField(max_length=200, help_text="The search query")
+    search_query = models.CharField(
+        max_length=200,
+        help_text="The search query",
+    )
 
     search_location = models.CharField(
         max_length=200, blank=True, help_text="Location used in search"

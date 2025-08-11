@@ -114,6 +114,8 @@ class BusinessSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create business with current user as owner"""
         # Only set owner if we have a request context
-        if self.context.get("request") and hasattr(self.context["request"], "user"):
+        if self.context.get("request") and hasattr(
+            self.context["request"], "user"
+        ):
             validated_data["owner"] = self.context["request"].user
         return super().create(validated_data)

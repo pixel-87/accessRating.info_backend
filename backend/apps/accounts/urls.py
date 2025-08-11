@@ -11,7 +11,9 @@ urlpatterns = [
     path("update-type/", views.update_user_type, name="update-user-type"),
     # Favorites management
     path(
-        "favorites/", views.UserFavoritesListView.as_view(), name="user-favorites-list"
+        "favorites/",
+        views.UserFavoritesListView.as_view(),
+        name="user-favorites-list",
     ),
     path(
         "favorites/<int:pk>/",

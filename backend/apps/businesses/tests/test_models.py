@@ -4,11 +4,12 @@ Tests for Business models.
 
 from datetime import timedelta
 
-from apps.businesses.models import Business, BusinessPhoto, BusinessReview
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
+
+from apps.businesses.models import Business, BusinessPhoto, BusinessReview
 
 
 class BusinessModelTest(TestCase):
@@ -17,12 +18,16 @@ class BusinessModelTest(TestCase):
     def setUp(self):
         """Set up test data."""
         self.user = User.objects.create_user(
-            username="testowner", email="owner@example.com", password="testpass123"
+            username="testowner",
+            email="owner@example.com",
+            password="testpass123",
         )
 
         self.business_data = {
             "name": "Test Cafe",
-            "description": "A friendly local cafe with good accessibility features.",
+            "description": (
+                "A friendly local cafe with good accessibility features."
+            ),
             "address": "123 Test Street, Test Town",
             "postcode": "SW1A 1AA",
             "city": "London",
@@ -39,14 +44,14 @@ class BusinessModelTest(TestCase):
     def test_business_creation(self):
         """Test creating a business with valid data."""
         business = Business.objects.create(**self.business_data)
-
         self.assertEqual(business.name, "Test Cafe")
         self.assertEqual(business.business_type, "cafe")
         self.assertEqual(business.specialisation, "Italian")
         self.assertEqual(business.accessibility_level, 3)
         self.assertEqual(business.owner, self.user)
         self.assertIsNotNone(business.id)
-        self.assertIsInstance(business.id, int)  # AutoField should be integer
+        # AutoField should be integer
+        self.assertIsInstance(business.id, int)
 
     def test_business_str_representation(self):
         """Test string representation of business."""
@@ -70,7 +75,8 @@ class BusinessModelTest(TestCase):
 
     def test_accessibility_level_choices(self):
         """Test accessibility level choices."""
-        # Create test data without coordinates to avoid decimal validation issues
+        # Create test data without coordinates to avoid decimal
+        # validation issues
         test_data = self.business_data.copy()
         test_data.pop("latitude", None)
         test_data.pop("longitude", None)
@@ -154,7 +160,10 @@ class BusinessModelTest(TestCase):
 
         # Verify default coordinates are London center
         self.assertEqual(float(business.latitude), 51.507351)
-        self.assertEqual(float(business.longitude), -0.127758)
+        self.assertEqual(
+            float(business.longitude),
+            -0.127758,
+        )
 
         # Test with custom coordinates
         business.latitude = 51.5074
@@ -176,7 +185,10 @@ class BusinessModelTest(TestCase):
         self.assertIsNotNone(url)
         self.assertIn("google.com/maps", url)
         self.assertIn("51.507351", url)
-        self.assertIn("-0.127758", url)
+        self.assertIn(
+            "-0.127758",
+            url,
+        )
 
 
 class BusinessReviewModelTest(TestCase):
@@ -189,7 +201,9 @@ class BusinessReviewModelTest(TestCase):
         )
 
         self.reviewer = User.objects.create_user(
-            username="reviewer", email="reviewer@example.com", password="testpass123"
+            username="reviewer",
+            email="reviewer@example.com",
+            password="testpass123",
         )
 
         self.business = Business.objects.create(
@@ -222,7 +236,8 @@ class BusinessReviewModelTest(TestCase):
         )
 
         expected = (
-            f"Positive review of {self.business.name} by {self.reviewer.username}"
+            f"Positive review of {self.business.name} by "
+            f"{self.reviewer.username}"
         )
         self.assertEqual(str(review), expected)
 
@@ -237,7 +252,9 @@ class BusinessReviewModelTest(TestCase):
 
         with self.assertRaises(IntegrityError):
             BusinessReview.objects.create(
-                business=self.business, reviewer=self.reviewer, rating="negative"
+                business=self.business,
+                reviewer=self.reviewer,
+                rating="negative",
             )
 
 
@@ -247,7 +264,9 @@ class BusinessPhotoModelTest(TestCase):
     def setUp(self):
         """Set up test data."""
         self.user = User.objects.create_user(
-            username="testuser", email="user@example.com", password="testpass123"
+            username="testuser",
+            email="user@example.com",
+            password="testpass123",
         )
 
         self.business = Business.objects.create(
@@ -264,7 +283,8 @@ class BusinessPhotoModelTest(TestCase):
         # Note: In a real test, you'd want to use a test image file
         photo = BusinessPhoto.objects.create(
             business=self.business,
-            photo="test_image.jpg",  # This would be a proper file in production
+            # This would be a proper file in production
+            photo="test_image.jpg",
             photo_type="exterior",
             caption="Front entrance",
             uploaded_by=self.user,

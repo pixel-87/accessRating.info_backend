@@ -102,7 +102,8 @@ class Migration(migrations.Migration):
                 (
                     "profile_public",
                     models.BooleanField(
-                        default=False, help_text="Make profile visible to other users"
+                        default=False,
+                        help_text="Make profile visible to other users",
                     ),
                 ),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
@@ -136,12 +137,16 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "search_query",
-                    models.CharField(help_text="The search query", max_length=200),
+                    models.CharField(
+                        help_text="The search query", max_length=200
+                    ),
                 ),
                 (
                     "search_location",
                     models.CharField(
-                        blank=True, help_text="Location used in search", max_length=200
+                        blank=True,
+                        help_text="Location used in search",
+                        max_length=200,
                     ),
                 ),
                 (

@@ -1,6 +1,7 @@
 """
 Test settings for accessibility_api project.
-Uses SQLite for faster test execution and overrides specific settings for testing.
+Uses SQLite for faster test execution and overrides specific settings for
+testing.
 """
 
 from datetime import timedelta
@@ -80,7 +81,8 @@ ACCOUNT_UNIQUE_EMAIL = True
 # REST Framework test settings - Use JWT for consistency with production
 REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] = [
     "rest_framework_simplejwt.authentication.JWTAuthentication",
-    "rest_framework.authentication.TokenAuthentication",  # Fallback for legacy tests
+    "rest_framework.authentication.TokenAuthentication",  # Fallback for legacy
+    # tests
     "rest_framework.authentication.SessionAuthentication",
 ]
 

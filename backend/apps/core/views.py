@@ -1,6 +1,5 @@
 import time
 
-from django.conf import settings
 from django.core.cache import cache
 from django.db import connection
 from django.http import JsonResponse
@@ -10,7 +9,11 @@ def health_check(request):
     """
     Health check endpoint for load balancers and monitoring
     """
-    health_status = {"status": "healthy", "timestamp": time.time(), "checks": {}}
+    health_status = {
+        "status": "healthy",
+        "timestamp": time.time(),
+        "checks": {},
+    }
 
     # Database check
     try:

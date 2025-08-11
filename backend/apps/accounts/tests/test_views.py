@@ -1,10 +1,11 @@
-from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
-from apps.businesses.models import Business
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
+from apps.businesses.models import Business
 
 
 class AccountsAPITestCase(APITestCase):
@@ -24,7 +25,9 @@ class AccountsAPITestCase(APITestCase):
         )
 
         self.other_user = User.objects.create_user(
-            username="otheruser", email="other@example.com", password="otherpass123"
+            username="otheruser",
+            email="other@example.com",
+            password="otherpass123",
         )
 
         # Create JWT tokens for authentication
@@ -52,7 +55,9 @@ class AccountsAPITestCase(APITestCase):
 
     def authenticate(self):
         """Authenticate the test client using JWT"""
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.access_token}")
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f"Bearer {self.access_token}"
+        )
 
 
 class UserProfileAPITest(AccountsAPITestCase):
@@ -109,7 +114,9 @@ class UserStatsAPITest(AccountsAPITestCase):
 
         # Create some test data
         UserFavorite.objects.create(user=self.user, business=self.business)
-        UserSearchHistory.objects.create(user=self.user, search_query="test search")
+        UserSearchHistory.objects.create(
+            user=self.user, search_query="test search"
+        )
 
         url = reverse("accounts:user-stats")
         response = self.client.get(url)
@@ -140,7 +147,9 @@ class UserFavoritesAPITest(AccountsAPITestCase):
         if "results" in response.data:
             # Paginated response
             self.assertEqual(len(response.data["results"]), 1)
-            self.assertEqual(response.data["results"][0]["business_name"], "Test Cafe")
+            self.assertEqual(
+                response.data["results"][0]["business_name"], "Test Cafe"
+            )
             self.assertEqual(
                 response.data["results"][0]["business_accessibility_level"], 3
             )
@@ -148,7 +157,9 @@ class UserFavoritesAPITest(AccountsAPITestCase):
             # Non-paginated response
             self.assertEqual(len(response.data), 1)
             self.assertEqual(response.data[0]["business_name"], "Test Cafe")
-            self.assertEqual(response.data[0]["business_accessibility_level"], 3)
+            self.assertEqual(
+                response.data[0]["business_accessibility_level"], 3
+            )
 
     def test_create_favorite(self):
         """Test creating a favorite"""
@@ -160,7 +171,9 @@ class UserFavoritesAPITest(AccountsAPITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(
-            UserFavorite.objects.filter(user=self.user, business=self.business).exists()
+            UserFavorite.objects.filter(
+                user=self.user, business=self.business
+            ).exists()
         )
 
     def test_delete_favorite(self):
@@ -168,9 +181,13 @@ class UserFavoritesAPITest(AccountsAPITestCase):
         self.authenticate()
 
         # Create a favorite
-        favorite = UserFavorite.objects.create(user=self.user, business=self.business)
+        favorite = UserFavorite.objects.create(
+            user=self.user, business=self.business
+        )
 
-        url = reverse("accounts:user-favorite-detail", kwargs={"pk": favorite.pk})
+        url = reverse(
+            "accounts:user-favorite-detail", kwargs={"pk": favorite.pk}
+        )
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -181,7 +198,8 @@ class UserFavoritesAPITest(AccountsAPITestCase):
         self.authenticate()
 
         url = reverse(
-            "accounts:toggle-favorite", kwargs={"business_id": self.business.id}
+            "accounts:toggle-favorite",
+            kwargs={"business_id": self.business.id},
         )
         response = self.client.post(url)
 
@@ -189,7 +207,9 @@ class UserFavoritesAPITest(AccountsAPITestCase):
         self.assertTrue(response.data["favorited"])
         self.assertIn("Added", response.data["message"])
         self.assertTrue(
-            UserFavorite.objects.filter(user=self.user, business=self.business).exists()
+            UserFavorite.objects.filter(
+                user=self.user, business=self.business
+            ).exists()
         )
 
     def test_toggle_favorite_remove(self):
@@ -200,7 +220,8 @@ class UserFavoritesAPITest(AccountsAPITestCase):
         UserFavorite.objects.create(user=self.user, business=self.business)
 
         url = reverse(
-            "accounts:toggle-favorite", kwargs={"business_id": self.business.id}
+            "accounts:toggle-favorite",
+            kwargs={"business_id": self.business.id},
         )
         response = self.client.post(url)
 
@@ -208,7 +229,9 @@ class UserFavoritesAPITest(AccountsAPITestCase):
         self.assertFalse(response.data["favorited"])
         self.assertIn("Removed", response.data["message"])
         self.assertFalse(
-            UserFavorite.objects.filter(user=self.user, business=self.business).exists()
+            UserFavorite.objects.filter(
+                user=self.user, business=self.business
+            ).exists()
         )
 
 
@@ -240,11 +263,15 @@ class UserSearchHistoryAPITest(AccountsAPITestCase):
             self.assertEqual(
                 response.data["results"][0]["search_query"], "accessible cafes"
             )
-            self.assertEqual(response.data["results"][0]["search_location"], "London")
+            self.assertEqual(
+                response.data["results"][0]["search_location"], "London"
+            )
         else:
             # Non-paginated response
             self.assertEqual(len(response.data), 1)
-            self.assertEqual(response.data[0]["search_query"], "accessible cafes")
+            self.assertEqual(
+                response.data[0]["search_query"], "accessible cafes"
+            )
             self.assertEqual(response.data[0]["search_location"], "London")
 
     def test_create_search_history(self):
@@ -301,7 +328,9 @@ class UpdateUserTypeAPITest(AccountsAPITestCase):
         """Test updating user type creates profile if it doesn't exist"""
         # Create user without profile
         new_user = User.objects.create_user(
-            username="newuser", email="newuser@example.com", password="password123"
+            username="newuser",
+            email="newuser@example.com",
+            password="password123",
         )
 
         # Create JWT token and authenticate as new user

@@ -22,7 +22,9 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/auth/", include("dj_rest_auth.urls")),  # Login, logout, user details
+    path(
+        "api/v1/auth/", include("dj_rest_auth.urls")
+    ),  # Login, logout, user details
     path(
         "api/v1/auth/registration/", include("dj_rest_auth.registration.urls")
     ),  # Registration
@@ -36,4 +38,6 @@ urlpatterns = [
 
 # Serve media files in development
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )

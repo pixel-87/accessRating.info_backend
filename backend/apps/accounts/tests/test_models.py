@@ -1,9 +1,10 @@
 from datetime import date
 
-from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
-from apps.businesses.models import Business
 from django.contrib.auth.models import User
 from django.test import TestCase
+
+from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
+from apps.businesses.models import Business
 
 
 class UserProfileModelTest(TestCase):
@@ -12,7 +13,9 @@ class UserProfileModelTest(TestCase):
     def setUp(self):
         """Set up test data"""
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
         )
 
     def test_user_profile_creation(self):
@@ -47,7 +50,9 @@ class UserProfileModelTest(TestCase):
     def test_assessor_without_training(self):
         """Test assessor without completed training"""
         profile = UserProfile.objects.create(
-            user=self.user, user_type="assessor", assessor_training_completed=False
+            user=self.user,
+            user_type="assessor",
+            assessor_training_completed=False,
         )
 
         self.assertTrue(profile.is_assessor)
@@ -55,7 +60,9 @@ class UserProfileModelTest(TestCase):
 
     def test_profile_str_method(self):
         """Test string representation of profile"""
-        profile = UserProfile.objects.create(user=self.user, user_type="regular")
+        profile = UserProfile.objects.create(
+            user=self.user, user_type="regular"
+        )
 
         expected = f"{self.user.username} - Regular User"
         self.assertEqual(str(profile), expected)
@@ -67,7 +74,9 @@ class UserFavoriteModelTest(TestCase):
     def setUp(self):
         """Set up test data"""
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
         )
 
         self.business = Business.objects.create(
@@ -80,7 +89,9 @@ class UserFavoriteModelTest(TestCase):
 
     def test_favorite_creation(self):
         """Test creating a favorite"""
-        favorite = UserFavorite.objects.create(user=self.user, business=self.business)
+        favorite = UserFavorite.objects.create(
+            user=self.user, business=self.business
+        )
 
         self.assertEqual(favorite.user, self.user)
         self.assertEqual(favorite.business, self.business)
@@ -88,7 +99,9 @@ class UserFavoriteModelTest(TestCase):
 
     def test_favorite_str_method(self):
         """Test string representation of favorite"""
-        favorite = UserFavorite.objects.create(user=self.user, business=self.business)
+        favorite = UserFavorite.objects.create(
+            user=self.user, business=self.business
+        )
 
         expected = f"{self.user.username} favorited {self.business.name}"
         self.assertEqual(str(favorite), expected)
@@ -108,7 +121,9 @@ class UserSearchHistoryModelTest(TestCase):
     def setUp(self):
         """Set up test data"""
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
         )
 
     def test_search_history_creation(self):
@@ -133,5 +148,7 @@ class UserSearchHistoryModelTest(TestCase):
             user=self.user, search_query="accessible restaurants"
         )
 
-        expected = f"{self.user.username} searched for 'accessible restaurants'"
+        expected = (
+            f"{self.user.username} searched for 'accessible restaurants'"
+        )
         self.assertEqual(str(search), expected)

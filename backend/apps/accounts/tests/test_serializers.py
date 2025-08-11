@@ -1,16 +1,14 @@
 from datetime import date
 
-from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
-from apps.accounts.serializers import (
-    UserFavoriteSerializer,
-    UserProfileSerializer,
-    UserSearchHistorySerializer,
-    UserSerializer,
-    UserUpdateSerializer,
-)
-from apps.businesses.models import Business
 from django.contrib.auth.models import User
 from django.test import TestCase
+
+from apps.accounts.models import UserFavorite, UserProfile, UserSearchHistory
+from apps.accounts.serializers import (UserFavoriteSerializer,
+                                       UserProfileSerializer,
+                                       UserSearchHistorySerializer,
+                                       UserSerializer, UserUpdateSerializer)
+from apps.businesses.models import Business
 
 
 class UserProfileSerializerTest(TestCase):
@@ -19,7 +17,9 @@ class UserProfileSerializerTest(TestCase):
     def setUp(self):
         """Set up test data"""
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
         )
 
         self.profile = UserProfile.objects.create(
@@ -62,7 +62,8 @@ class UserProfileSerializerTest(TestCase):
         self.assertEqual(updated_profile.user_type, "assessor")
         self.assertEqual(updated_profile.phone, "+447890123456")
         self.assertEqual(
-            updated_profile.accessibility_needs, "Wheelchair access required"
+            updated_profile.accessibility_needs,
+            "Wheelchair access required",
         )
 
 
@@ -79,7 +80,9 @@ class UserSerializerTest(TestCase):
             last_name="User",
         )
 
-        self.profile = UserProfile.objects.create(user=self.user, user_type="regular")
+        self.profile = UserProfile.objects.create(
+            user=self.user, user_type="regular"
+        )
 
         # Create a business owned by user
         self.business = Business.objects.create(
@@ -121,7 +124,9 @@ class UserUpdateSerializerTest(TestCase):
             last_name="User",
         )
 
-        self.profile = UserProfile.objects.create(user=self.user, user_type="regular")
+        self.profile = UserProfile.objects.create(
+            user=self.user, user_type="regular"
+        )
 
     def test_user_update_with_profile(self):
         """Test updating user and profile data"""
@@ -180,7 +185,9 @@ class UserFavoriteSerializerTest(TestCase):
     def setUp(self):
         """Set up test data"""
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
         )
 
         self.business = Business.objects.create(
@@ -215,7 +222,9 @@ class UserSearchHistorySerializerTest(TestCase):
     def setUp(self):
         """Set up test data"""
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="testpass123"
+            username="testuser",
+            email="test@example.com",
+            password="testpass123",
         )
 
         self.search = UserSearchHistory.objects.create(

@@ -5,11 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import UserFavorite, UserProfile, UserSearchHistory
-from .serializers import (
-    UserFavoriteSerializer,
-    UserSearchHistorySerializer,
-    UserUpdateSerializer,
-)
+from .serializers import (UserFavoriteSerializer, UserSearchHistorySerializer,
+                          UserUpdateSerializer)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -88,12 +85,16 @@ def toggle_favorite(request, business_id):
         else:
             # Favorite created
             return Response(
-                {"favorited": True, "message": f"Added {business.name} to favorites"}
+                {
+                    "favorited": True,
+                    "message": f"Added {business.name} to favorites",
+                }
             )
 
     except Exception:
         return Response(
-            {"error": "Unable to toggle favorite"}, status=status.HTTP_400_BAD_REQUEST
+            {"error": "Unable to toggle favorite"},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 

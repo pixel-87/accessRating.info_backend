@@ -50,12 +50,12 @@ db-reset: ## Reset database (WARNING: destroys all data)
 	cd backend && python manage.py migrate
 
 lint: ## Run linting
-	cd backend && flake8 apps/
-	cd backend && isort --check-diff apps/
+	cd backend && flake8 --exclude venv,migrations apps/
+	cd backend && isort --check --line-length 79 apps/
 
 format: ## Format code
-	cd backend && black apps/
-	cd backend && isort apps/
+	cd backend && black --line-length 79 apps/
+	cd backend && isort --line-length 79 apps/
 
 clean: ## Clean up cache files
 	find . -type d -name "__pycache__" -delete

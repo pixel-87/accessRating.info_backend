@@ -1,13 +1,15 @@
 """
 Production settings for accessibility_api project.
-This file contains production-specific configurations that override the base settings.
+This file contains production-specific configurations that override the base
+settings.
 """
 
-import os
+from .settings import config, BASE_DIR, MIDDLEWARE
 
-from decouple import config
+DEBUG = False
 
-from .settings import *  # noqa
+
+# SECURITY WARNING: don't run with debug turned on in production!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -33,7 +35,7 @@ for var in REQUIRED_ENV_VARS:
 
 if missing_vars:
     raise ValueError(
-        f"Missing required environment variables: {', '.join(missing_vars)}"
+        "Missing required environment variables: " + ", ".join(missing_vars)
     )
 
 # Database - Production PostgreSQL
@@ -45,7 +47,8 @@ DATABASES = {
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": config("DB_HOST"),
         "PORT": config("DB_PORT", default="5432"),
-        "CONN_MAX_AGE": 600,  # Keep connections alive for 10 minutes
+        # Keep connections alive for 10 minutes
+        "CONN_MAX_AGE": 600,
         "OPTIONS": {
             "sslmode": config("DB_SSL_MODE", default="require"),
         },
@@ -89,15 +92,19 @@ EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
-DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@yourdomain.com")
-
+DEFAULT_FROM_EMAIL = config(
+    "DEFAULT_FROM_EMAIL", default="noreply@yourdomain.com"
+)
 # Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "format": (
+                "{levelname} {asctime} {module} {process:d} "
+                "{thread:d} {message}"
+            ),
             "style": "{",
         },
         "simple": {

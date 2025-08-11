@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 from django.utils import timezone
 
 
 class Business(models.Model):
-    """Business model representing a local business with accessibility information"""
+    """Business model representing a local business with accessibility
+    information"""
 
     BUSINESS_TYPE_CHOICES = [
         ("cafe", "Cafe"),
@@ -23,10 +25,22 @@ class Business(models.Model):
 
     ACCESSIBILITY_RATING_CHOICES = [
         (1, "Rating 1: Accessible to individuals with limited mobility"),
-        (2, "Rating 2: Accessible to wheelchair users with step-free entry"),
-        (3, "Rating 3: Includes wheelchair-accessible bathroom with grab bars"),
-        (4, 'Rating 4: Includes "Changing Places" bathroom with hoist system'),
-        (5, "Rating 5: Fully accessible for multiple users with diverse needs"),
+        (
+            2,
+            "Rating 2: Accessible to wheelchair users with step-free entry",
+        ),
+        (
+            3,
+            "Rating 3: Includes wheelchair-accessible bathroom with grab bars",
+        ),
+        (
+            4,
+            'Rating 4: Includes "Changing Places" bathroom with hoist system',
+        ),
+        (
+            5,
+            "Rating 5: Fully accessible for multiple users with diverse needs",
+        ),
     ]
 
     STICKER_TYPE_CHOICES = [
@@ -40,7 +54,9 @@ class Business(models.Model):
     description = models.TextField(
         max_length=600,
         blank=True,
-        help_text="Business description (editable by business owner, ~100 words)",
+        help_text=(
+            "Business description (editable by business owner, ~100 words)"
+        ),
     )
 
     # Location information
@@ -76,12 +92,12 @@ class Business(models.Model):
         max_length=50,
         choices=BUSINESS_TYPE_CHOICES,
         default="other",
-        help_text="Type of business (e.g., cafe, restaurant, shop)",
+        help_text=("Type of business (e.g., cafe, restaurant, shop)"),
     )
     specialisation = models.CharField(
         max_length=100,
         blank=True,
-        help_text="Business specialisation (e.g., 'Italian' for restaurant)",
+        help_text=("Business specialisation (e.g., 'Italian' for restaurant)"),
     )
 
     # Contact information
@@ -91,7 +107,8 @@ class Business(models.Model):
     email = models.EmailField(blank=True, help_text="Contact email")
     website = models.URLField(blank=True, help_text="Business website")
     opening_times = models.TextField(
-        blank=True, help_text="Business opening times (editable by business owner)"
+        blank=True,
+        help_text=("Business opening times (editable by business owner)"),
     )
 
     # Accessibility information
@@ -100,28 +117,40 @@ class Business(models.Model):
         null=True,
         blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(5)],
-        help_text="Accessibility rating (1-5) assigned by trained volunteer assessor",
+        help_text=(
+            "Accessibility rating (1-5) assigned by trained volunteer assessor"
+        ),
     )
     accessibility_features = models.TextField(
         blank=True,
-        help_text="Specific accessibility notes and features (editable by business owner)",
+        help_text=(
+            "Specific accessibility notes and features "
+            "(editable by business owner)"
+        ),
     )
     accessibility_barriers = models.TextField(
-        blank=True, help_text="Description of accessibility barriers or limitations"
+        blank=True,
+        help_text=("Description of accessibility barriers or limitations"),
     )
     access_report = models.TextField(
         blank=True,
-        help_text="Full accessibility assessment report provided with rating",
+        help_text=(
+            "Full accessibility assessment report provided with rating"
+        ),
     )
 
     # Assessment dates
     first_assessed_date = models.DateTimeField(
-        null=True, blank=True, help_text="Date when business was first assessed"
+        null=True,
+        blank=True,
+        help_text="Date when business was first assessed",
     )
     next_assessment_date = models.DateTimeField(
         null=True,
         blank=True,
-        help_text="Scheduled date for next assessment (every 3 years or on request)",
+        help_text=(
+            "Scheduled date for next assessment (every 3 years or on request)"
+        ),
     )
 
     # Metadata
@@ -129,7 +158,9 @@ class Business(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_verified = models.BooleanField(
         default=False,
-        help_text="Whether this business listing has been verified by an admin",
+        help_text=(
+            "Whether this business listing has been verified by an admin"
+        ),
     )
 
     # Sticker program
@@ -146,11 +177,17 @@ class Business(models.Model):
     # Additional notes
     business_notes = models.TextField(
         blank=True,
-        help_text="Business notes and special requests (e.g., call in advance, bookings required)",
+        help_text=(
+            "Business notes and special requests (e.g., call in advance, "
+            "bookings required)"
+        ),
     )
     special_mentions = models.TextField(
         blank=True,
-        help_text="Special mentions about the business (e.g., employs people with disabilities)",
+        help_text=(
+            "Special mentions about the business (e.g., employs people with "
+            "disabilities)"
+        ),
     )
 
     # Relationships
@@ -160,7 +197,9 @@ class Business(models.Model):
         related_name="businesses",
         null=True,
         blank=True,
-        help_text="User who added/owns this business listing (business account)",
+        help_text=(
+            "User who added/owns this business listing (business account)"
+        ),
     )
 
     class Meta:
@@ -192,7 +231,10 @@ class Business(models.Model):
     @property
     def is_accessible(self):
         """Check if business has accessibility rating of 3 or higher"""
-        return self.accessibility_level is not None and self.accessibility_level >= 3
+        return (
+            self.accessibility_level is not None
+            and self.accessibility_level >= 3
+        )
 
     @property
     def has_location_data(self):
@@ -217,7 +259,8 @@ class Business(models.Model):
         # Format expected by tests: business_id_{id}_Test_Cafe_etc
         clean_name = self.name.replace(" ", "_")
         return (
-            f"business_id_{self.id}_{clean_name}_{self.city}_{self.accessibility_level}"
+            f"business_id_{self.id}_{clean_name}_{self.city}_"
+            f"{self.accessibility_level}"
         )
 
     def generate_qr_code_url(self):
@@ -262,7 +305,10 @@ class Business(models.Model):
     def get_google_maps_url(self):
         """Get Google Maps URL for the business location"""
         if self.has_location_data:
-            return f"https://www.google.com/maps?q={self.latitude},{self.longitude}"
+            return (
+                f"https://www.google.com/maps?q={self.latitude},"
+                f"{self.longitude}"
+            )
         return None
 
 
@@ -283,7 +329,9 @@ class BusinessPhoto(models.Model):
         related_name="photos",
         help_text="Business this photo belongs to",
     )
-    photo = models.ImageField(upload_to="business_photos/", help_text="Business photo")
+    photo = models.ImageField(
+        upload_to="business_photos/", help_text="Business photo"
+    )
     photo_type = models.CharField(
         max_length=20, choices=PHOTO_TYPE_CHOICES, help_text="Type of photo"
     )
@@ -292,7 +340,8 @@ class BusinessPhoto(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     is_primary = models.BooleanField(
-        default=False, help_text="Whether this is the primary photo for the business"
+        default=False,
+        help_text="Whether this is the primary photo for the business",
     )
     uploaded_by = models.ForeignKey(
         User,
@@ -339,7 +388,8 @@ class BusinessReview(models.Model):
     rating = models.CharField(
         max_length=10,
         choices=RATING_CHOICES,
-        help_text="Overall experience rating (required if other fields are added)",
+        help_text="Overall experience rating "
+        "(required if other fields are added)",
     )
     comment = models.TextField(
         blank=True, help_text="User's comment about their experience"
@@ -353,7 +403,8 @@ class BusinessReview(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_approved = models.BooleanField(
-        default=True, help_text="Whether this review has been approved by moderators"
+        default=True,
+        help_text="Whether this review has been approved by moderators",
     )
 
     class Meta:
@@ -368,4 +419,7 @@ class BusinessReview(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.get_rating_display()} review of {self.business.name} by {self.reviewer.username}"
+        return (
+            f"{self.get_rating_display()} review of {self.business.name} by "
+            f"{self.reviewer.username}"
+        )

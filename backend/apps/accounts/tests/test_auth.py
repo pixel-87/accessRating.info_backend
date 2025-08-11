@@ -13,7 +13,9 @@ class AuthenticationTest(APITestCase):
         """Set up test data"""
         self.client = APIClient()
         # Updated URLs to match your actual API endpoints
-        self.register_url = reverse("rest_register")  # /api/v1/auth/registration/
+        self.register_url = reverse(
+            "rest_register"
+        )  # /api/v1/auth/registration/
         self.login_url = reverse("rest_login")  # /api/v1/auth/login/
         self.logout_url = reverse("rest_logout")  # /api/v1/auth/logout/
         self.user_url = reverse("rest_user_details")  # /api/v1/auth/user/
@@ -36,8 +38,12 @@ class AuthenticationTest(APITestCase):
         response = self.client.post(self.register_url, self.user_data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn("access", response.data)  # JWT access token should be returned
-        self.assertIn("refresh", response.data)  # JWT refresh token should be returned
+        self.assertIn(
+            "access", response.data
+        )  # JWT access token should be returned
+        self.assertIn(
+            "refresh", response.data
+        )  # JWT refresh token should be returned
 
         # Verify user was created
         user = User.objects.get(username="testuser")
@@ -88,24 +94,35 @@ class AuthenticationTest(APITestCase):
 
     def test_user_login_success(self):
         """Test successful user login"""
-        login_data = {"username": "existinguser", "password": "existingpass123!"}
+        login_data = {
+            "username": "existinguser",
+            "password": "existingpass123!",
+        }
 
         response = self.client.post(self.login_url, login_data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("access", response.data)  # JWT access token should be returned
-        self.assertIn("refresh", response.data)  # JWT refresh token should be returned
+        self.assertIn(
+            "access", response.data
+        )  # JWT access token should be returned
+        self.assertIn(
+            "refresh", response.data
+        )  # JWT refresh token should be returned
 
     def test_user_login_email(self):
         """Test login with email instead of username"""
-        login_data = {"email": "existing@example.com", "password": "existingpass123!"}
+        login_data = {
+            "email": "existing@example.com",
+            "password": "existingpass123!",
+        }
 
         response = self.client.post(self.login_url, login_data)
 
         # This might fail depending on your auth configuration
         # Adjust based on your ACCOUNT_LOGIN_METHODS settings
         self.assertIn(
-            response.status_code, [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST]
+            response.status_code,
+            [status.HTTP_200_OK, status.HTTP_400_BAD_REQUEST],
         )
 
     def test_user_login_invalid_credentials(self):
@@ -128,7 +145,9 @@ class AuthenticationTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Verify token was deleted
-        self.assertFalse(Token.objects.filter(user=self.existing_user).exists())
+        self.assertFalse(
+            Token.objects.filter(user=self.existing_user).exists()
+        )
 
     def test_user_logout_unauthenticated(self):
         """Test logout without authentication"""
@@ -178,7 +197,9 @@ class TokenAuthenticationTest(TestCase):
     def setUp(self):
         """Set up test data"""
         self.user = User.objects.create_user(
-            username="tokenuser", email="token@example.com", password="tokenpass123!"
+            username="tokenuser",
+            email="token@example.com",
+            password="tokenpass123!",
         )
 
     def test_token_creation_on_user_creation(self):
