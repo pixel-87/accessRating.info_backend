@@ -10,7 +10,11 @@ repos:
       - id: isort
         args: [--profile=black, --line-length=79]
   - repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
+    rev: 7.3.0
     hooks:
       - id: flake8
         args: [--exclude=venv,migrations]
+  - repo: https://github.com/ibm/detect-secrets
+    rev: 0.13.1+ibm.62.dss
+    hooks:
+      - id: detect-secrets
