@@ -92,12 +92,16 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class UserFavoriteSerializer(serializers.ModelSerializer):
     """Serializer for user favorites"""
 
-    business_name = serializers.CharField(source="business.name", read_only=True)
+    business_name = serializers.CharField(
+        source="business.name", read_only=True
+    )
     business_accessibility_level = serializers.IntegerField(
         source="business.accessibility_level",
         read_only=True,
     )
-    business_city = serializers.CharField(source="business.city", read_only=True)
+    business_city = serializers.CharField(
+        source="business.city", read_only=True
+    )
     business_type = serializers.CharField(
         source="business.business_type",
         read_only=True,
@@ -136,7 +140,9 @@ class UserSearchHistorySerializer(serializers.ModelSerializer):
 class RegisterSerializer(BaseRegisterSerializer):
     """Custom registration serializer with phone field support for allauth adapter."""
 
-    _has_phone_field = False  # Ensure this is always present as a class attribute
+    _has_phone_field = (
+        False  # Ensure this is always present as a class attribute
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
