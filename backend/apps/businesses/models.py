@@ -388,6 +388,12 @@ class BusinessReview(models.Model):
         related_name="business_reviews",
         help_text="User who wrote the review",
     )
+    helpful_voters = models.ManyToManyField(
+        User,
+        related_name="helpful_reviews",
+        blank=True,
+        help_text="Users who marked this review as helpful",
+    )
     rating = models.CharField(
         max_length=10,
         choices=RATING_CHOICES,
