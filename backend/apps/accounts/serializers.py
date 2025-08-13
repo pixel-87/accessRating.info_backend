@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from dj_rest_auth.registration.serializers import (
+    RegisterSerializer as BaseRegisterSerializer,
+)
 
 from .models import UserFavorite, UserProfile, UserSearchHistory
 
@@ -89,16 +92,12 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class UserFavoriteSerializer(serializers.ModelSerializer):
     """Serializer for user favorites"""
 
-    business_name = serializers.CharField(
-        source="business.name", read_only=True
-    )
+    business_name = serializers.CharField(source="business.name", read_only=True)
     business_accessibility_level = serializers.IntegerField(
         source="business.accessibility_level",
         read_only=True,
     )
-    business_city = serializers.CharField(
-        source="business.city", read_only=True
-    )
+    business_city = serializers.CharField(source="business.city", read_only=True)
     business_type = serializers.CharField(
         source="business.business_type",
         read_only=True,
@@ -132,3 +131,13 @@ class UserSearchHistorySerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["id", "created_at"]
+
+
+class RegisterSerializer(BaseRegisterSerializer):
+    """Custom registration serializer with phone field support for allauth adapter."""
+
+    _has_phone_field = False  # Ensure this is always present as a class attribute
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._has_phone_field = False  # Set to True if you add a phone field
