@@ -1,19 +1,9 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.12.8
     hooks:
-      - id: black
-        args: [--line-length=79]
-  - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
-    hooks:
-      - id: isort
-        args: [--profile=black, --line-length=79]
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
-        args: [--exclude=venv,migrations]
+      - id: ruff
+        args: [--fix, --unsafe-fixes, --line-length=79]
   - repo: https://github.com/ibm/detect-secrets
     rev: 0.13.1+ibm.62.dss
     hooks:
