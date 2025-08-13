@@ -41,14 +41,13 @@ class CustomUserAdmin(UserAdmin):
 
     list_filter = UserAdmin.list_filter + ("profile__user_type",)
 
-    def get_user_type(self, obj):
+    @admin.display(description="User Type")
+    def get_user_type(self, obj: User) -> str:
         """Get user type from profile"""
         try:
             return obj.profile.get_user_type_display()
         except UserProfile.DoesNotExist:
             return "No Profile"
-
-    get_user_type.short_description = "User Type"
 
 
 @admin.register(UserProfile)

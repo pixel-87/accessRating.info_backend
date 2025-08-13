@@ -1,3 +1,5 @@
+typecheck: ## Run mypy type checks
+	cd backend && mypy apps/
 .PHONY: help install test run migrate clean lint format
 
 help: ## Show this help message
