@@ -1,5 +1,4 @@
 import math
-
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -7,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Business, BusinessPhoto, BusinessReview
@@ -65,9 +64,7 @@ def business_locations(request):
         try:
             min_rating = int(min_rating)
             if 1 <= min_rating <= 5:
-                businesses = businesses.filter(
-                    accessibility_level__gte=min_rating
-                )
+                businesses = businesses.filter(accessibility_level__gte=min_rating)
         except (ValueError, TypeError):
             pass
 
@@ -77,9 +74,7 @@ def business_locations(request):
         try:
             max_rating = int(max_rating)
             if 1 <= max_rating <= 5:
-                businesses = businesses.filter(
-                    accessibility_level__lte=max_rating
-                )
+                businesses = businesses.filter(accessibility_level__lte=max_rating)
         except (ValueError, TypeError):
             pass
 
@@ -140,7 +135,6 @@ def business_locations(request):
             filtered_businesses = [
                 {
                     "id": b.id,
-                    "name": b.name,
                     "latitude": float(b.latitude),
                     "longitude": float(b.longitude),
                     "address": b.address,
@@ -171,11 +165,37 @@ def business_locations(request):
 def business_card_html(request, business_id):
     """Return HTML fragment for a single business card (for map popup/panel)"""
     business = get_object_or_404(Business, id=business_id)
-    return render(
+    api_base = request.build_absolute_uri('/').rstrip('/')
+    response = render(
         request,
         "businesses/business_card.html",
-        {"business": business},
+        {"business": business, "api_base": api_base},
     )
+    response["X-Fragment"] = "business-card"
+    return response
+
+
+# API endpoint for business detail HTML fragment (for HTMX business page)
+def business_detail_html(request, business_id):
+    """Return HTML fragment for a business detail page (for HTMX)"""
+    business = get_object_or_404(Business, id=business_id)
+    reviews = BusinessReview.objects.filter(business=business).select_related(
+        "reviewer"
+    )
+    photos = business.photos.all()
+    api_base = request.build_absolute_uri('/').rstrip('/')
+    response = render(
+        request,
+        "businesses/business_detail_fragment.html",
+        {
+            "business": business,
+            "reviews": reviews,
+            "photos": photos,
+            "api_base": api_base,
+        },
+    )
+    response["X-Fragment"] = "business-detail"
+    return response
 
 
 @csrf_exempt
@@ -201,14 +221,19 @@ def business_search_html(request):
     businesses = businesses.order_by("-accessibility_level", "name")
 
     # Render the template with businesses
-    return render(
+    api_base = request.build_absolute_uri('/').rstrip('/')
+    response = render(
         request,
         "businesses/business_cards.html",
         {
             "businesses": businesses,
             "search_query": search_query,
+            "api_base": api_base,
         },
     )
+    response["X-Fragment"] = "business-search"
+    return response
+    # Note: above return will exit; if modified to return a response object, set header
 
 
 class BusinessViewSet(viewsets.ModelViewSet):
@@ -258,10 +283,7 @@ class BusinessViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         """Only allow owners to delete their businesses"""
-        if (
-            instance.owner != self.request.user
-            and not self.request.user.is_staff
-        ):
+        if instance.owner != self.request.user and not self.request.user.is_staff:
             raise PermissionError("You can only delete your own businesses")
         super().perform_destroy(instance)
 
@@ -327,3 +349,34 @@ class BusinessReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Set the reviewer to the current user when creating a review"""
         serializer.save(reviewer=self.request.user)
+
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def mark_helpful(self, request, pk=None):
+        review = self.get_object()
+        user = request.user
+        if review.reviewer == user:
+            return Response(
+                {"detail": "You cannot mark your own review as helpful."}, status=403
+            )
+        if review.helpful_voters.filter(id=user.id).exists():
+            return Response(
+                {"detail": "You have already marked this review as helpful."},
+                status=400,
+            )
+        review.helpful_voters.add(user)
+        review.save()
+        serializer = self.get_serializer(review, context={"request": request})
+        return Response(serializer.data)
+
+    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+    def unmark_helpful(self, request, pk=None):
+        review = self.get_object()
+        user = request.user
+        if not review.helpful_voters.filter(id=user.id).exists():
+            return Response(
+                {"detail": "You have not marked this review as helpful."}, status=400
+            )
+        review.helpful_voters.remove(user)
+        review.save()
+        serializer = self.get_serializer(review, context={"request": request})
+        return Response(serializer.data)

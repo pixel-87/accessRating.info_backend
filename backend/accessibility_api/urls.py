@@ -31,6 +31,9 @@ urlpatterns = [
         "api/v1/accounts/",
         include(("apps.accounts.urls", "accounts"), namespace="accounts"),
     ),
+    path(
+        "businesses/", include("apps.businesses.urls")
+    ),  # Server-rendered business pages
     # We'll add more API endpoints here later
 ]
 

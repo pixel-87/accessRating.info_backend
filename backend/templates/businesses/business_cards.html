@@ -5,10 +5,11 @@
     <h3 class="text-xl font-bold text-gray-900 mb-2">{{ business.name }}</h3>
     <a
       class="text-blue-600 text-sm hover:underline whitespace-nowrap"
-      hx-get="/businesses/{{ business.id }}/detail_html/"
+      href="#/businesses/{{ business.id }}"
+      hx-get="{{ api_base }}/api/v1/businesses/{{ business.id }}/fragment/"
       hx-target="#main-content"
       hx-swap="innerHTML"
-      hx-push-url="/business/{{ business.id }}"
+      hx-push-url="/businesses/{{ business.id }}"
     >View details →</a>
     <span
       class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
