@@ -1,4 +1,5 @@
-<div class="bg-white rounded-lg shadow-md p-6">
+<a href="{% url 'business_detail_html' business.id %}" class="no-underline text-inherit">
+  <div class="bg-white rounded-lg shadow-md p-6">
   <!-- Close Button -->
   <div class="flex justify-between items-start mb-4">
     <h3 class="text-xl font-bold text-gray-900">{{ business.name }}</h3>
@@ -102,3 +103,4 @@
     {% endif %}
   </div>
 </div>
+</a>
