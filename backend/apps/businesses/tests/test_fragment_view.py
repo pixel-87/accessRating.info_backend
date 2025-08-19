@@ -11,7 +11,7 @@ class BusinessFragmentViewTest(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
-            username="fraguser", password="testpass123" # pragma: allowlist secret
+            username="fraguser", password="testpass123"
         )
         self.business = Business.objects.create(
             owner=self.user,

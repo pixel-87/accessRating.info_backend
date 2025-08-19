@@ -165,7 +165,7 @@ def business_locations(request):
 def business_card_html(request, business_id):
     """Return HTML fragment for a single business card (for map popup/panel)"""
     business = get_object_or_404(Business, id=business_id)
-    api_base = request.build_absolute_uri('/').rstrip('/')
+    api_base = request.build_absolute_uri("/").rstrip("/")
     response = render(
         request,
         "businesses/business_card.html",
@@ -183,7 +183,7 @@ def business_detail_html(request, business_id):
         "reviewer"
     )
     photos = business.photos.all()
-    api_base = request.build_absolute_uri('/').rstrip('/')
+    api_base = request.build_absolute_uri("/").rstrip("/")
     response = render(
         request,
         "businesses/business_detail_fragment.html",
@@ -221,7 +221,7 @@ def business_search_html(request):
     businesses = businesses.order_by("-accessibility_level", "name")
 
     # Render the template with businesses
-    api_base = request.build_absolute_uri('/').rstrip('/')
+    api_base = request.build_absolute_uri("/").rstrip("/")
     response = render(
         request,
         "businesses/business_cards.html",
