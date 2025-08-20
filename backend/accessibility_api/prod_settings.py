@@ -57,8 +57,19 @@ DATABASES = {
 
 # CORS - Strict production settings
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="").split(",")
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in config("CORS_ALLOWED_ORIGINS", default="").split(",")
+    if origin.strip()
+]
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF trusted origins for cross-origin frontend (set in .env.prod)
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in config("CSRF_TRUSTED_ORIGINS", default="").split(",")
+    if origin.strip()
+]
 
 # Security Headers
 SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=True, cast=bool)
@@ -72,10 +83,10 @@ X_FRAME_OPTIONS = "DENY"
 # Session Security
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = config("SESSION_COOKIE_SAMESITE", default="None")
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = config("CSRF_COOKIE_SAMESITE", default="None")
 
 # Static files - Use WhiteNoise for serving static files
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")

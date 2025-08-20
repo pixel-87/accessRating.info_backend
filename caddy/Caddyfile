@@ -59,13 +59,7 @@ api.pixel-87.uk, www.api.pixel-87.uk {
         }
     }
 
-    # SPA frontend: serve built files from /app/frontend and fallback to index.html for client-side routing
-    handle {
-        root * /app/frontend
-        try_files {path} /index.html
-        encode gzip zstd
-        file_server
-    }
+    # No SPA frontend here (frontend hosted separately)
     
     # Error pages
     handle_errors {
