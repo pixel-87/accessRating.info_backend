@@ -10,8 +10,8 @@ services:
       - ../caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
-  - staticfiles:/app/staticfiles:ro
-  - media:/app/media:ro
+      - staticfiles:/app/staticfiles:ro
+      - media:/app/media:ro
     depends_on:
       - web
     restart: unless-stopped

@@ -30,7 +30,10 @@ urlpatterns = [
     ),  # Registration
     # DRF API endpoints (un-namespaced names like 'business-list', 'business-detail')
     path("api/v1/", include(businesses_router.urls)),
-    path("businesses/", include(("apps.businesses.urls", "businesses"), namespace="businesses")),
+    path(
+        "businesses/",
+        include(("apps.businesses.urls", "businesses"), namespace="businesses"),
+    ),
     path(
         "api/v1/accounts/",
         include(("apps.accounts.urls", "accounts"), namespace="accounts"),
