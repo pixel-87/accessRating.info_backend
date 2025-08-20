@@ -1,0 +1,43 @@
+{# Fragment for HTMX business detail page #}
+<div class="business-detail p-6 bg-white rounded-lg shadow-md">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-bold">{{ business.name }}</h2>
+    <a
+      href="/businesses"
+      class="text-sm text-blue-600 hover:underline"
+      hx-get="{{ api_base }}/api/v1/search/"
+      hx-target="#main-content"
+      hx-swap="innerHTML"
+      hx-push-url="/businesses"
+    >
+      ← Back to list
+    </a>
+  </div>
+
+  <p class="text-sm text-gray-700 mb-2">{{ business.address }}</p>
+  <p class="text-sm text-gray-700 mb-2">Type: {{ business.business_type }}</p>
+  <p class="text-sm text-gray-700 mb-4">Accessibility Level: {{ business.accessibility_level }}</p>
+  <p class="text-gray-700 mb-6">{{ business.description }}</p>
+
+  <h3 class="font-semibold mb-2">Photos</h3>
+  <div class="business-photos mb-6">
+    {% for photo in photos %}
+      <img src="{{ photo.image.url }}" alt="Photo of {{ business.name }}" class="inline-block max-w-xs mr-2 mb-2" />
+    {% empty %}
+      <p class="text-sm text-gray-500">No photos available.</p>
+    {% endfor %}
+  </div>
+
+  <h3 class="font-semibold mb-2">Reviews</h3>
+  <div class="business-reviews">
+    {% for review in reviews %}
+      <div class="review mb-4">
+        <strong class="block">{{ review.reviewer.username }}</strong>
+        <span class="text-sm text-gray-600">Rating: {{ review.rating }}</span>
+        <p class="text-gray-800">{{ review.text }}</p>
+      </div>
+    {% empty %}
+      <p class="text-sm text-gray-500">No reviews yet.</p>
+    {% endfor %}
+  </div>
+</div>

@@ -22,6 +22,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include("apps.core.urls")),  # health and small core utilities
     path("api/v1/auth/", include("dj_rest_auth.urls")),  # Login, logout, user details
     path(
         "api/v1/auth/registration/", include("dj_rest_auth.registration.urls")
@@ -31,6 +32,9 @@ urlpatterns = [
         "api/v1/accounts/",
         include(("apps.accounts.urls", "accounts"), namespace="accounts"),
     ),
+    path(
+        "businesses/", include("apps.businesses.urls")
+    ),  # Server-rendered business pages
     # We'll add more API endpoints here later
 ]
 

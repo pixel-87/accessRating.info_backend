@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>{{ business.name }}</h1>
+  <p>{{ business.description }}</p>
+  <p><strong>Address:</strong> {{ business.address }}, {{ business.city }}, {{ business.postcode }}</p>
+  <p><strong>Type:</strong> {{ business.business_type }}</p>
+  <p><strong>Accessibility Level:</strong> {{ business.accessibility_level }}</p>
+
+  <h2>Photos</h2>
+  {% if photos %}
+    <div class="business-photos">
+      {% for photo in photos %}
+        <img src="{{ photo.photo.url }}" alt="{{ photo.caption }}" style="max-width:200px; margin:10px;" />
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No photos available.</p>
+  {% endif %}
+
+  <h2>Reviews</h2>
+  {% if reviews %}
+    <ul>
+      {% for review in reviews %}
+        <li>
+          <strong>{{ review.reviewer }}</strong> ({{ review.rating }})<br>
+          {{ review.comment }}<br>
+          Helpful votes: {{ review.helpful_voters.count }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No reviews yet.</p>
+  {% endif %}
+
+  <!-- Add review form and helpful vote buttons here in future -->
+{% endblock %}
