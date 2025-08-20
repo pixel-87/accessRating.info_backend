@@ -32,10 +32,6 @@ COPY backend/ /app/
 RUN mkdir -p /app/staticfiles /app/media /var/log/django \
     && chown -R django:django /app /var/log/django
 
-# Collect static files
-RUN DJANGO_SETTINGS_MODULE=accessibility_api.prod_settings \
-    python manage.py collectstatic --noinput
-
 # Switch to non-root user
 USER django
 
@@ -44,5 +40,5 @@ EXPOSE 8000
 
 # Health check is configured via docker-compose.prod.yml
 
-# Default command
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120", "accessibility_api.wsgi:application"]
+# Default command: collect static at runtime (env provided by docker-compose) then start Gunicorn
+CMD ["/bin/sh", "-c", "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 accessibility_api.wsgi:application"]
