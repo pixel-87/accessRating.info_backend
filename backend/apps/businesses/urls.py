@@ -12,7 +12,7 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register(r"businesses", BusinessViewSet)
+router.register(r"businesses", BusinessViewSet, basename="business")
 router.register(r"business-photos", BusinessPhotoViewSet)
 router.register(r"business-reviews", BusinessReviewViewSet)
 

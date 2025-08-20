@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from apps.businesses.urls import router as businesses_router
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -27,14 +28,13 @@ urlpatterns = [
     path(
         "api/v1/auth/registration/", include("dj_rest_auth.registration.urls")
     ),  # Registration
-    path("api/v1/", include("apps.businesses.urls")),  # Business API endpoints
+    # DRF API endpoints (un-namespaced names like 'business-list', 'business-detail')
+    path("api/v1/", include(businesses_router.urls)),
+    path("businesses/", include(("apps.businesses.urls", "businesses"), namespace="businesses")),
     path(
         "api/v1/accounts/",
         include(("apps.accounts.urls", "accounts"), namespace="accounts"),
     ),
-    path(
-        "businesses/", include("apps.businesses.urls")
-    ),  # Server-rendered business pages
     # We'll add more API endpoints here later
 ]
 

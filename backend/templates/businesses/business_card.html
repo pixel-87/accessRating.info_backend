@@ -1,6 +1,6 @@
-<a href="/businesses/{{ business.id }}" class="no-underline text-inherit"
+<a href="#/businesses/{{ business.id }}" class="no-underline text-inherit"
   hx-get="{{ api_base }}/api/v1/businesses/{{ business.id }}/fragment/" hx-target="#main-content" hx-swap="innerHTML"
-  hx-push-url="/businesses/{{ business.id }}">
+  hx-push-url="#/businesses/{{ business.id }}">
   <div class="bg-white rounded-lg shadow-md p-6">
     <!-- Close Button -->
     <div class="flex justify-between items-start mb-4">
