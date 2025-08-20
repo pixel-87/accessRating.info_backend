@@ -16,7 +16,7 @@ coverage==7.10.2
 cryptography==45.0.6
 detect_secrets @ git+https://github.com/ibm/detect-secrets.git@cb803c6f7883b631b9aa9c8664b0937a9d358609
 distlib==0.4.0
-dj-rest-auth==6.0.0
+dj-rest-auth==7.0.1
 Django==5.2.4
 django-allauth==65.10.0
 django-cors-headers==4.7.0
