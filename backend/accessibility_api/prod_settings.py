@@ -1,22 +1,21 @@
 """
 Production settings for accessibility_api project.
-This file contains production-specific configurations that override the base
-settings.
+This file inherits from base settings and overrides prod-specific values.
 """
 
-from .settings import BASE_DIR, MIDDLEWARE, config
+# Import everything from base settings then override
+from .settings import *  # noqa: F401,F403
+from .settings import BASE_DIR, MIDDLEWARE, config  # explicit for linters
 
-DEBUG = False
-
-
-# SECURITY WARNING: don't run with debug turned on in production!
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# Ensure we have access to symbols imported by base (like config, BASE_DIR)
+# DEBUG must be disabled in production
 DEBUG = False
 
 # Security
 SECRET_KEY = config("SECRET_KEY")  # REQUIRED - no default in production
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="").split(",")
+ALLOWED_HOSTS = [
+    h.strip() for h in config("ALLOWED_HOSTS", default="").split(",") if h.strip()
+]
 
 # Validate required environment variables
 REQUIRED_ENV_VARS = [
@@ -89,7 +88,9 @@ CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = config("CSRF_COOKIE_SAMESITE", default="None")
 
 # Static files - Use WhiteNoise for serving static files
-MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+# Insert after SecurityMiddleware (which is index 1 in base list)
+if "whitenoise.middleware.WhiteNoiseMiddleware" not in MIDDLEWARE:
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -103,9 +104,7 @@ EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
 EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
-DEFAULT_FROM_EMAIL = config(
-    "DEFAULT_FROM_EMAIL", default="noreply@yourdomain.com"
-)
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="noreply@yourdomain.com")
 # Logging
 LOGGING = {
     "version": 1,
@@ -113,8 +112,7 @@ LOGGING = {
     "formatters": {
         "verbose": {
             "format": (
-                "{levelname} {asctime} {module} {process:d} "
-                "{thread:d} {message}"
+                "{levelname} {asctime} {module} {process:d} " "{thread:d} {message}"
             ),
             "style": "{",
         },
