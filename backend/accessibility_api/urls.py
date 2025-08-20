@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from apps.businesses.urls import router as businesses_router
+from apps.businesses import views as business_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -30,6 +31,28 @@ urlpatterns = [
     ),  # Registration
     # DRF API endpoints (un-namespaced names like 'business-list', 'business-detail')
     path("api/v1/", include(businesses_router.urls)),
+    # Non-router business endpoints used by the static frontend
+    path("api/v1/search/", business_views.business_search_html, name="business_search_html"),
+    path(
+        "api/v1/businesses/<int:business_id>/card/",
+        business_views.business_card_html,
+        name="business_card_html",
+    ),
+    path(
+        "api/v1/businesses/<int:business_id>/detail_html/",
+        business_views.business_detail_html,
+        name="business_detail_html",
+    ),
+    path(
+        "api/v1/businesses/<int:business_id>/fragment/",
+        business_views.business_detail_html,
+        name="business_fragment_html",
+    ),
+    path(
+        "api/v1/business-locations/",
+        business_views.business_locations,
+        name="business_locations",
+    ),
     path(
         "businesses/",
         include(("apps.businesses.urls", "businesses"), namespace="businesses"),
