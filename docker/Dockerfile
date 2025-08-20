@@ -33,7 +33,8 @@ RUN mkdir -p /app/staticfiles /app/media /var/log/django \
     && chown -R django:django /app /var/log/django
 
 # Collect static files
-# RUN python manage.py collectstatic --noinput --settings=accessibility_api.prod_settings
+RUN DJANGO_SETTINGS_MODULE=accessibility_api.prod_settings \
+    python manage.py collectstatic --noinput
 
 # Switch to non-root user
 USER django
@@ -41,9 +42,7 @@ USER django
 # Expose port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD python manage.py check --deploy --settings=accessibility_api.prod_settings || exit 1
+# Health check is configured via docker-compose.prod.yml
 
 # Default command
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "120", "accessibility_api.wsgi:application"]

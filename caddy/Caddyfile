@@ -43,14 +43,14 @@ api.pixel-87.uk, www.api.pixel-87.uk {
         header Cache-Control "no-cache, no-store, must-revalidate"
     }
     
-    # All other requests to Django
-    handle {
+    # API requests -> Django backend
+    handle_path /api/* {
         reverse_proxy web:8000 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
             header_up X-Forwarded-For {remote_host}
             header_up X-Forwarded-Proto {scheme}
-            
+
             # Timeouts
             transport http {
                 dial_timeout 60s
@@ -58,6 +58,8 @@ api.pixel-87.uk, www.api.pixel-87.uk {
             }
         }
     }
+
+    # No SPA frontend here (frontend hosted separately)
     
     # Error pages
     handle_errors {
