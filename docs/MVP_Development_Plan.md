@@ -1,111 +1,63 @@
-# Access Rating Scheme - MVP Development Plan
+# Access Rating Scheme - Solo Dev MVP Roadmap
 
-A comprehensive development roadmap for the UK-focused accessibility rating platform.
+This roadmap reflects the actual state of the codebase as of August 2025.
 
-## 🎯 MVP Overview
+## Core Stack
 
-**Mission**: Empower disabled individuals with reliable accessibility information while raising business awareness about inclusivity.
+- Django REST API (backend)
+- PostgreSQL (DB)
+- Docker for dev/prod
 
-**Core Concept**: Voluntary rating scheme (1-5 scale) for businesses, with physical QR code stickers linking to detailed online profiles.
+## Key Practices
 
-## 🏗️ System Architecture
+- Pre-commit: black, isort, flake8, detect-secrets
+- Use features_to_implement.md as your actionable backlog
 
-```
-React Frontend ↔ Django REST API ↔ PostgreSQL Database
-```
+## Roadmap & Status
 
-### Tech Stack
+**Phase 1: Backend MVP (done)**
+- Django project setup
+- Business model (core fields, admin interface)
+- User authentication (accounts app, profile, favorites)
+- REST API endpoints for business, photo, review, favorites
+- Business photo and review models/endpoints
 
-- **Backend**: Django + Django REST Framework
-- **Frontend**: React (decoupled SPA)
-- **Database**: PostgreSQL with basic location storage (lat/lng)
-- **Authentication**: JWT tokens via djangorestframework-simplejwt
-- **DevOps**: Docker, environment variables
-- **Caching**: Redis (future enhancement)
+**Phase 2: User Features (partially done)**
+- JWT auth, user profile, favorites (implemented)
+- Business reviews and photos (implemented)
+- User registration/login (backend present, frontend needed)
+- Business claiming (not yet implemented)
+- QR code generation (not yet implemented)
+- User dashboard (not yet implemented)
 
-### App Structure
+**Phase 3: Assessment Workflow (planned/simplified)**
+- Google Forms for volunteer assessments (external/manual)
+- Admin manual entry of ratings (via Django admin)
+- QR/sticker tracking (not yet implemented)
 
-```
-apps/
-├── accounts/     # User management, JWT auth, roles ✅ COMPLETE
-└── businesses/   # Business profiles, contact info, photos, QR codes ✅ COMPLETE
-```
+**Phase 4: Polish & Scale (planned)**
+- Google Maps, filtering, image optimization, review moderation, analytics, Docker, CI/CD (not yet implemented)
 
-**Simplified Architecture:**
+**Phase 5: Production Launch (planned)**
+- Deploy, SSL, backup, UAT, legal pages, feedback (not yet implemented)
 
-- **No separate `assessments/` app** - Google Forms → Admin process → Manual rating entry
-- **No separate `stickers/` app** - QR generation built into Business model + simple request tracking
-- **No separate `reviews/` app** - Reviews integrated into businesses app
+**Future**
+- PostGIS, mobile app, advanced analytics, integrations
 
-This streamlined approach reduces complexity while maintaining all core functionality.
+## Dev Workflow
 
-## 👥 User Roles
+1. Setup venv & install deps
+2. Run pre-commit install
+3. Use black, isort, flake8, detect-secrets (pre-commit)
+4. Use Docker for deployment
+5. Use features_to_implement.md for backlog
 
-### Public Users
+## Status
 
-- View business accessibility ratings
-- Leave feedback (positive/neutral/negative + comments)
-- Save favorites and share businesses
-- Scan QR codes for instant access
+Backend MVP: business model, user auth, favorites, reviews, and photos are implemented. No QR code, business claiming, or advanced features yet. See features_to_implement.md for next steps.
 
-### Business Owners
-
-- Claim and edit business listings
-- Upload photos and accessibility notes
-- Update opening hours and contact info
-- Request assessments and replacement stickers
-
-### Admins/Volunteers
-
-- Conduct accessibility assessments (1-5 rating)
-- Approve official ratings and reports
-- Manage user accounts and moderate reviews
-- Handle sticker printing and fulfillment
-
-## 🏪 Rating System
-
-**1**: Limited mobility friendly (elderly, walking aids, visually impaired)  
-**2**: Wheelchair accessible entry (step-free, wide doorways)  
-**3**: Accessible bathroom with grab bars and turning space  
-**4**: Changing Places bathroom with hoist and shower  
-**5**: Fully accessible with event hosting capabilities
-
-## 🔧 Core Features (MVP)
-
-### Business Profiles
-
-- Name, address, business type + specialization
-- Description, accessibility notes, opening times
-- Inside/outside photos
-- Contact information (email/phone)
-
-### Assessment System
-
-- Official volunteer-conducted ratings
-- Admin approval workflow
-- PDF reports and detailed notes
-- 3-year re-assessment cycle (£30 fee)
-
-### Public Feedback
-
-- eBay-style sentiment rating
-- Optional comments and photos
-- Moderation system for content quality
-
-### QR Sticker System
-
-- 5 different sticker designs (by rating)
-- Unique business registration ID
-- Two sticker types (front-stick vs back-stick)
-- Links to public business profile
-
-### User Features
-
-- JWT-based authentication
-- Personal favorites and sharing
-- Multilingual support (tourist-friendly)
-- Basic location display with Google Maps integration
-
+---
+_Solo dev streamlined plan. Remove/expand as needed._
 ## 🚀 Development Approach
 
 ### MVP Philosophy

@@ -1,3 +1,5 @@
+typecheck: ## Run mypy type checks
+	cd backend && mypy apps/
 .PHONY: help install test run migrate clean lint format
 
 help: ## Show this help message
@@ -11,7 +13,7 @@ install: ## Install dependencies
 
 install-dev: ## Install development dependencies
 	cd backend && pip install -r requirements.txt
-	cd backend && pip install pytest-cov black flake8 isort
+	cd backend && pip install pytest-cov ruff
 
 test: ## Run all tests
 	cd backend && python -m pytest
@@ -50,12 +52,10 @@ db-reset: ## Reset database (WARNING: destroys all data)
 	cd backend && python manage.py migrate
 
 lint: ## Run linting
-	cd backend && flake8 apps/
-	cd backend && isort --check-diff apps/
+	cd backend && ruff check --fix apps/
 
 format: ## Format code
-	cd backend && black apps/
-	cd backend && isort apps/
+	cd backend && ruff format --line-length 79 apps/
 
 clean: ## Clean up cache files
 	find . -type d -name "__pycache__" -delete
