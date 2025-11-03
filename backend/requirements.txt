@@ -23,7 +23,7 @@ django-cors-headers==4.7.0
 django-debug-toolbar==6.0.0
 django-extensions==4.1
 django-filter==25.1
-djangorestframework==3.16.0
+djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
 filelock==3.18.0
 identify==2.6.13
